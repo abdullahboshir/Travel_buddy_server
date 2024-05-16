@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createUserServices, getUserProfileService } from "./user.services";
+import { createUserServices, getUserProfileService, updateUserService } from "./user.services";
 import { tryCatchHandler } from "../../utils/tryCatchHandler";
 
 
@@ -17,6 +17,18 @@ export const createUserController = async (req: Request, res: Response) => {
 export const getUserProfileController = tryCatchHandler(
     async (req, res) => {
         const result = await getUserProfileService(req.headers.authorization);
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "User profile updated successfully",
+            data: result
+        })
+    }); 
+
+
+export const updateUserController = tryCatchHandler(
+    async (req, res) => {
+        const result = await updateUserService(req.headers.authorization, req.body);
         res.status(200).json({
             success: true,
             statusCode: 200,

@@ -57,3 +57,28 @@ export const getUserProfileService = async (token: any) => {
     return result;
 };
 
+
+export const updateUserService = async (token: any, payload: any) => {
+
+    if(!token){
+        throw new Error('Your are not authorizaed!')
+    };
+
+    const decoded = jwt.verify(token, config.jwt.jwt_secret as Secret) as JwtPayload;
+
+    const result = await prisma.user.update({
+        where: {
+            id: decoded.id 
+        },
+        data: payload,
+        select: {
+            id: true,
+            name : true,
+            email :true,
+            createdAt: true,
+            updatedAt: true
+        }
+    });
+    return result;
+};
+
