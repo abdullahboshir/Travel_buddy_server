@@ -1,5 +1,7 @@
+import { pick } from "../../../Shered/pick";
 import { sendReponseHandler } from "../../utils/sendResponseHandler";
 import { tryCatchHandler } from "../../utils/tryCatchHandler";
+import { paginationFields, tripFilterAbleFields } from "./trip.constant";
 import { createTripService, getTripService, sendBuddyReqServices } from "./trip.services";
 
 
@@ -21,9 +23,12 @@ export const craeteTripController = tryCatchHandler(
 
 export const getTripController = tryCatchHandler(
     async (req, res) => {
-        const result = await getTripService(req.query);
+  
+        const filters = pick(req.query, tripFilterAbleFields);
+        const pagination = pick(req.query, paginationFields);
+    
+        const result = await getTripService(filters, pagination);
 
-        
             sendReponseHandler(res, {
             success: true,
             statusCode: 201,
@@ -36,7 +41,7 @@ export const getTripController = tryCatchHandler(
 
 export const sendBuddyReqController = tryCatchHandler(
     async (req, res) => {
-        console.log('reqqqqqqqqqqqq', req.params.tripId)
+
         const result = await sendBuddyReqServices(req.params, req.body);
 
         

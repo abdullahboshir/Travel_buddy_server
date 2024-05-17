@@ -1,5 +1,7 @@
-import { TravelBuddyRequest, Trip, UserProfile, status } from "@prisma/client";
+import {TravelBuddyRequest, Trip, status } from "@prisma/client";
 import { prisma } from "../../../Shered/prisma";
+import { dateFinder } from "../../../Shered/dateFinder";
+
 
 
 export const createTripService = async (payload: Trip) => {
@@ -13,13 +15,65 @@ export const createTripService = async (payload: Trip) => {
 };
 
 
-export const getTripService = async (query: any) => {
-    console.log('queryyyyyyyyyyyyy', query);
-    let result;
+export const getTripService = async (query: any, pagination: any) => {
 
-   if(Object.keys(query).length >= 0){
-    result = await prisma.trip.findMany({});
-   };
+    const {searchTerm, ...filterData} = query;   
+    const condition = [];
+ 
+    const {startDate, endDate, ...stringData} = filterData;
+
+    stringData.budget = Number(query.budget);
+   
+    
+    const dateStart = dateFinder(startDate)
+   const dateEnd = dateFinder(endDate)
+
+   console.log('start dateeeeeeeee', dateStart, 'end dateeeeeeeee', dateEnd)
+    
+
+  
+
+if(searchTerm){
+    condition.push({
+        OR: ['destination'].map(field => ({
+            [field]: {
+                contains: searchTerm,
+                mode: 'insensitive'
+            }
+        }))
+    });
+};
+
+
+
+if(Object.keys(stringData).length > 0){
+    condition.push({
+        AND: Object.keys(stringData).map(key => ({
+            [key]: {
+                equals: stringData[key]
+            }
+        }))
+    })
+};
+
+console.log('query fieldsssssssssssssssss',  dateStart, dateEnd)
+
+
+const andCondition  = {AND: condition};
+
+
+const result = await prisma.trip.findMany({
+    where: {
+        OR: [
+            {
+                startDate: {gte: dateFinder(startDate)}, endDate: {lte: dateFinder(endDate)}
+            },
+            // {
+            //     startDate : {gte: dateFinder(startDate)}, endDate: {lte: dateFinder(endDate)}
+            // }
+        ]
+    }
+});
 
 
     return result;
