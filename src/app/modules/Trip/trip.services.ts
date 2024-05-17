@@ -22,16 +22,10 @@ export const getTripService = async (query: any, pagination: any) => {
  
     const {startDate, endDate, ...stringData} = filterData;
 
+   if(stringData.budget && !NaN){
     stringData.budget = Number(query.budget);
+   }
    
-    
-    const dateStart = dateFinder(startDate)
-   const dateEnd = dateFinder(endDate)
-
-   console.log('start dateeeeeeeee', dateStart, 'end dateeeeeeeee', dateEnd)
-    
-
-  
 
 if(searchTerm){
     condition.push({
@@ -56,23 +50,28 @@ if(Object.keys(stringData).length > 0){
     })
 };
 
-console.log('query fieldsssssssssssssssss',  dateStart, dateEnd)
 
+if(startDate && endDate){
+    condition.push( {
+        OR: [
+            {
+                startDate: {gte: dateFinder(startDate)}, endDate: {lte: dateFinder(endDate)}
+            },
+            {
+                startDate : {gte: dateFinder(startDate)}, endDate: {lte: dateFinder(endDate)}
+            }
+        ]
+    })
+};
+
+console.log('conditonnnnnnnnnnnnnnnnnnnnnnn', condition)
 
 const andCondition  = {AND: condition};
 
 
 const result = await prisma.trip.findMany({
-    where: {
-        OR: [
-            {
-                startDate: {gte: dateFinder(startDate)}, endDate: {lte: dateFinder(endDate)}
-            },
-            // {
-            //     startDate : {gte: dateFinder(startDate)}, endDate: {lte: dateFinder(endDate)}
-            // }
-        ]
-    }
+    where: andCondition
+    
 });
 
 
