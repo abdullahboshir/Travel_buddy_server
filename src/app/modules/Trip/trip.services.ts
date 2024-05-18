@@ -1,25 +1,38 @@
 import {TravelBuddyRequest, Trip, status } from "@prisma/client";
 import { prisma } from "../../../Shered/prisma";
-import { dateFinder } from "../../../Shered/dateFinder";
 import { calculatePagination } from "../../helpers/calculatePagination";
 import { TMeta } from "../../utils/sendResponseHandler";
 import { ApiErrors } from "../../errors/ApiErrors";
 import httpStatus from "http-status";
 import  jwt  from "jsonwebtoken";
 import config from "../../../config";
+import { parseDate } from "../../../Shered/dateFinder";
 
 
 
-export const createTripService = async (token: string, payload: Trip) => {
+export const createTripService = async (token: string, payload: any) => {
 
     if(!token){
         throw new ApiErrors(false, httpStatus.FORBIDDEN, "Unauthorized Access",)
     };
 
     const verifyToken = jwt.verify(token, config.jwt.jwt_secret as string);
-    console.log('verify tokennnnnnnnnnn', verifyToken)
 
-    // console.log('dataaaaaaaa', payload)
+    const isExistUser = await prisma.user.findUnique({
+        where: {
+            id: payload.userId
+        }
+    });
+
+    if(!isExistUser){
+        throw new ApiErrors(false, httpStatus.NOT_FOUND, 'USER not found!')
+    }
+
+   
+    payload.startDate = parseDate(payload.startDate);
+    payload.endDate = parseDate(payload.endDate);
+
+
     
     const createTrip = await prisma.trip.create({
         data: payload
@@ -36,7 +49,7 @@ export const getTripService = async (query: any, pagination: any) => {
 
     const {page, limit, skip, sortBy, sortOrder} = calculatePagination(pagination);
 
-    // console.log('paginationnnnnn data', paginate)
+
     const {startDate, endDate, minBudget, maxBudget, ...stringData} = filterData;
 
    if(stringData.budget && !NaN){
@@ -77,10 +90,10 @@ if(startDate && endDate){
     condition.push( {
         OR: [
             {
-                startDate: {gte: dateFinder(startDate)}, endDate: {lte: dateFinder(endDate)}
+                startDate: {gte: parseDate(startDate)}, endDate: {lte: parseDate(endDate)}
             },
             {
-                startDate : {gte: dateFinder(startDate)}, endDate: {lte: dateFinder(endDate)}
+                startDate : {gte: parseDate(startDate)}, endDate: {lte: parseDate(endDate)}
             }
         ]
     })

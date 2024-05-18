@@ -2,8 +2,7 @@ import { prisma } from "../../../Shered/prisma";
 import bcrypt from 'bcrypt';
 import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
 import config from "../../../config";
-import { ApiErrors } from "../../errors/ApiErrors";
-import httpStatus from "http-status";
+
 
 export const createUserServices = async (payload: any) => {
 
@@ -87,8 +86,6 @@ export const getUserProfileService = async (token: any) => {
 export const updateUserService = async (token: any, payload: any) => {
     let result;
 
-    
-    console.log('payloaddddddddddddddddddddddd', payload)
 
     if(!token){
         throw new Error('Your are not authorizaed!')
@@ -96,7 +93,6 @@ export const updateUserService = async (token: any, payload: any) => {
 
     const decoded = jwt.verify(token, config.jwt.jwt_secret as Secret) as JwtPayload;
 
-    console.log('checkkkkkkkkkkkkkkkkkkkkkkk', decoded)
 
     if(payload?.email || payload?.name){
          result = await prisma.user.update({
