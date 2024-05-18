@@ -31,9 +31,10 @@ export const getTripController = tryCatchHandler(
 
             sendReponseHandler(res, {
             success: true,
-            statusCode: 201,
-            message: "Trip created successfully",
-            data: result
+            "statusCode": 200,
+            "message": "Trips retrieved successfully",
+            meta: result.meta,
+            data: result.date
             })
 
     });
