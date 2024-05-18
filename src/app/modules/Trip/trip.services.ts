@@ -3,10 +3,22 @@ import { prisma } from "../../../Shered/prisma";
 import { dateFinder } from "../../../Shered/dateFinder";
 import { calculatePagination } from "../../helpers/calculatePagination";
 import { TMeta } from "../../utils/sendResponseHandler";
+import { ApiErrors } from "../../errors/ApiErrors";
+import httpStatus from "http-status";
+import  jwt  from "jsonwebtoken";
+import config from "../../../config";
 
 
 
-export const createTripService = async (payload: Trip) => {
+export const createTripService = async (token: string, payload: Trip) => {
+
+    if(!token){
+        throw new ApiErrors(false, httpStatus.FORBIDDEN, "Unauthorized Access",)
+    };
+
+    const verifyToken = jwt.verify(token, config.jwt.jwt_secret as string);
+    console.log('verify tokennnnnnnnnnn', verifyToken)
+
     // console.log('dataaaaaaaa', payload)
     
     const createTrip = await prisma.trip.create({
@@ -116,7 +128,15 @@ const meta: TMeta = {
 };
 
 
-export const sendBuddyReqServices = async (param: any, payload: TravelBuddyRequest) => {
+export const sendBuddyReqServices = async (token: string, param: any, payload: TravelBuddyRequest) => {
+
+    if(!token){
+        throw new ApiErrors(false, httpStatus.FORBIDDEN, "Unauthorized Access",)
+    };
+
+    const verifyToken = jwt.verify(token, config.jwt.jwt_secret as string);
+ 
+
     const sendReq = await prisma.travelBuddyRequest.create({
         data : {
             tripId: param.tripId,

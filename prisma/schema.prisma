@@ -54,9 +54,10 @@ model TravelBuddyRequest {
 
 model UserProfile {
   id String @id @unique @default(uuid())
-  userId User @relation(fields: [id], references: [id])
-  bio String
-  age Int
+  userId String @unique
+  user User @relation(fields: [userId], references: [id])
+  bio String @default("")
+  age Int @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

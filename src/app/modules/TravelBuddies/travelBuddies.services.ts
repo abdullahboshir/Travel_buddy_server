@@ -1,7 +1,19 @@
+import httpStatus from "http-status";
 import { prisma } from "../../../Shered/prisma";
+import { ApiErrors } from "../../errors/ApiErrors";
+import config from "../../../config";
+import jwt from "jsonwebtoken";
 
 
-export const getSingleTravelBuddiesServices =  async (param: any) => {
+export const getSingleTravelBuddiesServices =  async (token: string, param: any) => {
+
+    if(!token){
+        throw new ApiErrors(false, httpStatus.FORBIDDEN, "Unauthorized Access",)
+    };
+
+    const verifyToken = jwt.verify(token, config.jwt.jwt_secret as string);
+ 
+
     const getTrip = await prisma.travelBuddyRequest.findFirst({
         where: param, 
         include: {
@@ -21,15 +33,21 @@ export const getSingleTravelBuddiesServices =  async (param: any) => {
 };
 
 
-export const respondTravelReqService = async (param: any, payload: any) => {
-    console.log(param, payload)
+export const respondTravelReqService = async (token: string, param: any, payload: any) => {
+    if(!token){
+        throw new ApiErrors(false, httpStatus.FORBIDDEN, "Unauthorized Access",)
+    };
+
+    const verifyToken = jwt.verify(token, config.jwt.jwt_secret as string);
+
+
     const respondReq = await prisma.travelBuddyRequest.update({
         where: {
-            id: param,
+            id: param.buddyId,
             tripId: payload.tripId
         },
         data: {
-            status :payload.status
+            status : payload.status
         }
     });
 

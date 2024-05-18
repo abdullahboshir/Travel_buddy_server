@@ -6,7 +6,7 @@ import { getSingleTravelBuddiesServices, respondTravelReqService } from "./trave
 
 export const getSingleTravelBuddiesController = tryCatchHandler(
     async (req, res) => {
-        const result = await getSingleTravelBuddiesServices(req.params); 
+        const result = await getSingleTravelBuddiesServices(req.headers.authorization as string, req.params); 
     
         sendReponseHandler(res, {
         success: true,
@@ -20,7 +20,7 @@ export const getSingleTravelBuddiesController = tryCatchHandler(
 
 export const respondTravelReqController = tryCatchHandler(
     async (req, res) => {
-        const result = await respondTravelReqService(req.params.buddyId, req.body); 
+        const result = await respondTravelReqService(req.headers.authorization as string, req.params, req.body); 
     
         sendReponseHandler(res, {
         success: true,

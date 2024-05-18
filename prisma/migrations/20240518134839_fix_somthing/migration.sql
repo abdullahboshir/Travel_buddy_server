@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "userProfiles" ALTER COLUMN "bio" SET DEFAULT '',
+ALTER COLUMN "age" SET DEFAULT 0;

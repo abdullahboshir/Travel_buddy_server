@@ -1,3 +1,4 @@
+import { JwtPayload } from "jsonwebtoken";
 import { pick } from "../../../Shered/pick";
 import { sendReponseHandler } from "../../utils/sendResponseHandler";
 import { tryCatchHandler } from "../../utils/tryCatchHandler";
@@ -7,7 +8,7 @@ import { createTripService, getTripService, sendBuddyReqServices } from "./trip.
 
 export const craeteTripController = tryCatchHandler(
     async (req, res) => {
-        const result = await createTripService(req.body);
+        const result = await createTripService(req.headers.authorization as string, req.body);
 
         
             sendReponseHandler(res, {
@@ -43,7 +44,7 @@ export const getTripController = tryCatchHandler(
 export const sendBuddyReqController = tryCatchHandler(
     async (req, res) => {
 
-        const result = await sendBuddyReqServices(req.params, req.body);
+        const result = await sendBuddyReqServices(req.headers.authorization as string, req.params, req.body);
 
         
             sendReponseHandler(res, {
