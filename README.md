@@ -1,3 +1,6 @@
+### Video record Link: https://www.loom.com/share/469ed5f2250d40a487cf5a33c5225679
+
+
 # The instruction of how to run locally the application:-
 
 > Please hit the EndPoint by access token according to your need. 
