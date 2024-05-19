@@ -65,8 +65,6 @@
 * Example:? sortOrder=desc/asc
 
 
-
-f6d89a39-ae80-4ed3-98d3-4339c48928e0
 ### 5. Send Travel Buddy Request
 * Endpoint: http://localhost:5000/api/trip/:f6d89a39-ae80-4ed3-98d3-4339c48928e0/request
 
