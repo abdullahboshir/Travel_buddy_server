@@ -1,10 +1,7 @@
 # The instruction of how to run locally the application:-
 
-> Please hit the EndPoint by access token according to your need. User or Admin 
+> Please hit the EndPoint by access token according to your need. 
 * start:dev- this script for run typsript with auto restert
-
-> total 8 datas there are in model of course. and id is mongodb generated id. have no any custom id;
-
 
 # "scripts":--
 
@@ -15,149 +12,110 @@
 
 # Now i will explain all Endpoints of this project
 ### 1. Create a User
-   * Endpoint: http://localhost:5000/api/auth/register
+   * Endpoint: http://localhost:5000/api/register
   * Method: POST
   * Request Body:
  ``` {
-    "username": "john_doe",
-    "email": "john@example.com",
-    "password": "User12@#",
-    "role": "user"
+ {
+    "name": "Ph Hero",
+    "email": "ph.hero@gmail.com",
+    "password": "12345"
+  }
 }
 ```
 
 ### 2. Login a User
-   * Endpoint: http://localhost:5000/api/auth/login
+   * Endpoint: http://localhost:5000/api/login
 
   * Method: POST
   * Request Body:
  ``` {
-    "username": "john_doe",
-    "password": "User1@#"
+    "email": "ph.hero@gmail.com",
+    "password": "12345"
 }
 ```
 
-
-### 3. Change Password
-   * Endpoint: http://localhost:5000/api/auth/change-password
-
-  * Method: POST
-  * Request Body:
- ```{
-    "currentPassword": "User7@##",
-    "newPassword": "User7@####"
-}
-```
-
-
-
-
-### 4. Create a Course
-   * Endpoint: http://localhost:5000/api/courses
+### 3. Create a trips
+   * Endpoint: http://localhost:5000/api/trips
   * Method: POST
   * Request Body:
  ``` {
-    "title": "Sample Course",
-    "instructor": "Jane Doe",
-    "categoryId": "657adf8d456bd9a903ec43a9",
-    "price": 49.99,
-    "tags": [
-        {
-            "name": "Programming",
-            "isDeleted": false
-        },
-        {
-            "name": "Web Development",
-            "isDeleted": false
-        }
-    ],
-    "startDate": "2023-01-15",
-    "endDate":"2023-03-14",
-    "language": "English",
-    "provider": "Tech Academy",
-    "details": {
-        "level": "Intermediate",
-        "description": "Detailed description of the course"
-    }
+   "userId": "db87cdfc-13ac-4ffb-9c54-57d332efa9e9",
+    "destination": "Bangladeseh, Bandarban, Coxes bazar",
+    "startDate": "2024-11-20",
+    "endDate": "2024-11-27",
+    "budget": 5900,
+    "activities": ["Sea Beach", "Saint Martin"]
 }
 ```
 
-### 5. Get Paginated and Filtered Courses.
-* Endpoint: http://localhost:5000/api/courses
+### 4. Get Paginated and Filtered in Trips.
+* Endpoint: http://localhost:5000/api/trips
 * Method: GET
 > Query Parameters for API Requests:-
 
+* Example:? destination=Paris, France
+* Example:? startDate=2024-07-17&endDate=2024-08-15
+* Example:? budget=4500
+* Example:? minBudget=1000&maxBudget=1900
+* Example:? searchTerm=dubai
 * Example:? page=2
 * Example:? limit=4
-* Example:? sortBy=startDate
-* Example:? sortOrder=desc
-* Example:? minPrice=20.00&maxPrice=50.00
-* Example:? tags=Programming
-* Example:? startDate=2023-01-01&endDate=2023-12-31
-* Example:? language=English
-* Example:? provider=Tech Academy
-* Example:? durationInWeeks=13
-* Example:? level=Intermediate
+* Example:? sortBy=budget/destination
+* Example:? sortOrder=desc/asc
 
 
 
-### 6. Create a Category
-* Endpoint: http://localhost:5000/api/categories
+f6d89a39-ae80-4ed3-98d3-4339c48928e0
+### 5. Send Travel Buddy Request
+* Endpoint: http://localhost:5000/api/trip/:f6d89a39-ae80-4ed3-98d3-4339c48928e0/request
+
 * Method: POST
 * Request Body:
 ```
 {
-    "name": "Programming"
+    "userId": "db87cdfc-13ac-4ffb-9c54-57d332efa9e9"
 }
 ```
 
-### 7. Get All Categories
-* Endpoint: http://localhost:5000/api/categories
+### 6.  Get Potential Travel Buddies For a Specific Trip
+* Endpoint: http://localhost:5000/api/travel-buddies/3ccb63d1-1e95-44c7-aec4-1a1f7a1d0622
 * Method: GET
-* Response:  `please hit the endpoint with for response`
+* Response:  `please hit the endpoint for response`
 
 
-### 8. Create a Review
-* Endpoint:  http://localhost:5000/api/reviews
-* Method: POST
-* Request Body:
-
-```
-{
-    "courseId": "658cf680ca702c021b2ddecc",
-    "rating": 4,
-    "review": "Great course, very informative and well-structured."
-}
-```
-
-
-### 9. Update a Course (Partial Update with Dynamic Update)**
-* Endpoint:   http://localhost:5000/api/courses/658cf680ca702c021b2ddecc
+### 7.Respond to Travel Buddy Request
+* Endpoint:  http://localhost:5000/api/travel-buddies/9ee791eb-dbd8-45d4-8958-fb748ad0a065/respond
 * Method: PUT
 * Request Body:
 
 ```
 {
-    "price": 59.99,
-    "tags": [
-        {"name": "Programming", "isDeleted": false},
-        {"name": "Web Development", "isDeleted": false},
-        {"name": "JavaScript", "isDeleted": false}
-    ],
-    "details": {
-        "level": "Intermediate",
-        "description": "A comprehensive course on web development with a focus on JavaScript."
-    }
+    "tripId": "2e8e7ce9-627f-483c-a86e-4f6d0857c871",
+    "status": "APPROVED"
 }
 ```
 
-### 10. Get Course by ID by Reviews**
-* Endpoint: http://localhost:5000/api/courses/658cf680ca702c021b2ddecc/reviews
+### 8.  Get User Profile
+* Endpoint: http://localhost:5000/api/profile
 * Method: GET
-* Response: `please hit the endpoint for response`
+* Response: `please hit the endpoint for response with token of any user`
 
-### 11. Get the Best Course Based on Average Review (Rating)
-* Endpoint: http://localhost:5000/api/course/best
-* Method: GET
-* Response: `please hit the endpoint for response`
+
+### 9. Update a Course (Partial Update with Dynamic Update)**
+* Endpoint:   http://localhost:5000/api/Update User Profile
+* Method: PUT
+* Request Body:
+
+```
+{
+    "name": "John Sina",
+    "email": "john.doe@example.com"
+}
+OR
+{
+    "age": 50,
+    "bio": "update a user bio with mandatory information"
+}
+```
 
