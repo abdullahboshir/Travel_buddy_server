@@ -1,6 +1,7 @@
 import { prisma } from "../../../Shered/prisma";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import config from "../../../config";
 
 export const userLoginServices = async (payload: any) => {
 
@@ -21,7 +22,7 @@ const tokenPayload = {
     email: isUserExists.email
 };
 
-const accessToken = jwt.sign(tokenPayload, '9d676938bff08febbb5de9a9ceb5e624202104991b293c64', {expiresIn: '10d'});
+const accessToken = jwt.sign(tokenPayload, config.jwt.jwt_secret as string, {expiresIn: config.jwt.jwt_expireIn});
 
     const data = await prisma.user.findUniqueOrThrow({
         where: {

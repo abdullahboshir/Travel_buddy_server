@@ -31,7 +31,7 @@ const userLoginServices = (payload) => __awaiter(void 0, void 0, void 0, functio
         id: isUserExists.id,
         email: isUserExists.email
     };
-    const accessToken = jsonwebtoken_1.default.sign(tokenPayload, '9d676938bff08febbb5de9a9ceb5e624202104991b293c64', { expiresIn: '10d' });
+    const accessToken = jsonwebtoken_1.default.sign(tokenPayload, config, { expiresIn: '10d' });
     const data = yield prisma_1.prisma.user.findUniqueOrThrow({
         where: {
             email: isUserExists.email
