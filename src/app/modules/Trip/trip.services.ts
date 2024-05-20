@@ -12,7 +12,7 @@ import { parseDate } from "../../../Shered/dateFinder";
 
 export const createTripService = async (token: string, payload: any) => {
 
-    if(!token){
+    if(!token){ 
         throw new ApiErrors(false, httpStatus.FORBIDDEN, "Unauthorized Access",)
     };
 
