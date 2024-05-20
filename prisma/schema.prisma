@@ -7,59 +7,57 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id String @id @unique @default(uuid())
-  name String
-  email String @unique
-  password String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  trip Trip[]
+  id                 String               @id @unique @default(uuid())
+  name               String
+  email              String               @unique
+  password           String
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
   travelBuddyRequest TravelBuddyRequest[]
-  userProfile UserProfile[]
+  trip               Trip[]
+  userProfile        UserProfile?
 
   @@map("users")
 }
 
 model Trip {
-  id String @id @unique @default(uuid())
-  userId String 
-  destination  String
-  startDate DateTime
-  endDate DateTime 
-  budget Int
-  activities String[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user User @relation(fields: [userId], references: [id])
+  id                 String               @id @unique @default(uuid())
+  destination        String
+  startDate          DateTime
+  endDate            DateTime
+  budget             Int
+  activities         String[]
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  userId             String
   travelBuddyRequest TravelBuddyRequest[]
+  user               User                 @relation(fields: [userId], references: [id])
 
   @@map("trips")
 }
 
 model TravelBuddyRequest {
-  id String @id @unique @default(uuid()) 
-  tripId  String
-  userId  String
-  status status
+  id        String   @id @unique @default(uuid())
+  status    status
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  trip Trip @relation(fields: [tripId], references: [id]) 
-  user User @relation(fields: [userId], references: [id])
+  tripId    String
+  userId    String
+  trip      Trip     @relation(fields: [tripId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 
-   @@map("travelBuddyRequests")
+  @@map("travelBuddyRequests")
 }
 
-
 model UserProfile {
-  id String @id @unique @default(uuid())
-  userId String @unique
-  user User @relation(fields: [userId], references: [id])
-  bio String @default("")
-  age Int @default(0)
+  id        String   @id @unique @default(uuid())
+  bio       String   @default("")
+  age       Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
 
   @@map("userProfiles")
 }
@@ -69,6 +67,3 @@ enum status {
   APPROVED
   REJECTED
 }
-
-
-
