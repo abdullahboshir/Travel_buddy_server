@@ -28,8 +28,8 @@ const accessToken = jwt.sign(tokenPayload, config.jwt.jwt_secret as string, {exp
         where: {
             email: isUserExists.email
         }
-    });
-
+    }); 
+ 
     return {
         data,
        accessToken
