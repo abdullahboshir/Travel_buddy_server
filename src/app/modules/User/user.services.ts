@@ -24,9 +24,9 @@ const hashedPass = await bcrypt.hash(payload.password, 12);
 payload.password = hashedPass;
 
 
-const createUser = await prisma.$transaction(async (useTransaction) => {
+const createUser = await prisma.$transaction(async (usedTransaction) => {
 
-    const user =  await useTransaction.user.create({
+    const user =  await usedTransaction.user.create({
         data: payload,
         select: {
             id: true,
@@ -38,7 +38,7 @@ const createUser = await prisma.$transaction(async (useTransaction) => {
     });
 
 
-    const createUserProfile = await useTransaction.userProfile.create({
+    const createUserProfile = await usedTransaction.userProfile.create({
         data: {
             user: {
                 connect: {

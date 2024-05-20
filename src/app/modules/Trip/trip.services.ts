@@ -148,6 +148,28 @@ export const sendBuddyReqServices = async (token: string, param: any, payload: T
     };
 
     const verifyToken = jwt.verify(token, config.jwt.jwt_secret as string);
+
+
+    const isExistUser = await prisma.user.findUnique({
+        where: {
+            id: payload.userId
+        }
+    });
+
+    if(!isExistUser){
+        throw new ApiErrors(false, httpStatus.NOT_FOUND, 'USER not found!')
+    };
+
+
+    const isExisTrip = await prisma.trip.findUnique({
+        where: {
+            id: param.tripId
+        }
+    });
+
+    if(!isExisTrip){
+        throw new ApiErrors(false, httpStatus.NOT_FOUND, 'TRIP not found!')
+    };
  
 
     const sendReq = await prisma.travelBuddyRequest.create({

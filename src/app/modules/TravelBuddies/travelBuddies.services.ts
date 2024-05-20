@@ -5,13 +5,24 @@ import config from "../../../config";
 import jwt from "jsonwebtoken";
 
 
+
 export const getSingleTravelBuddiesServices =  async (token: string, param: any) => {
 
     if(!token){
         throw new ApiErrors(false, httpStatus.FORBIDDEN, "Unauthorized Access",)
     };
 
-    const verifyToken = jwt.verify(token, config.jwt.jwt_secret as string);
+
+
+    const isExisTrip = await prisma.trip.findUnique({
+        where: {
+            id: param.tripId
+        }
+    });
+
+    if(!isExisTrip){
+        throw new ApiErrors(false, httpStatus.NOT_FOUND, 'TRIP not found!')
+    };
  
 
     const getTrip = await prisma.travelBuddyRequest.findFirst({
