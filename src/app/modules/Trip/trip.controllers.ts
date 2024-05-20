@@ -6,7 +6,7 @@ import { paginationFields, tripFilterAbleFields } from "./trip.constant";
 import { createTripService, getTripService, sendBuddyReqServices } from "./trip.services";
 
 
-export const craeteTripController = tryCatchHandler(
+export const craeteTripController = tryCatchHandler( 
     async (req, res) => {
         const result = await createTripService(req.headers.authorization as string, req.body);
 

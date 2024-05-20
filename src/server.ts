@@ -1,10 +1,9 @@
 import app from "./app";
-
-const PORT = 5000;
+import config from "./config";
 
 const main = () => {
-   app.listen(PORT, () => {
-    console.log('App running on Port', PORT)
+   app.listen(config.port, () => {
+    console.log('App running on Port', config.port)
    })
 };
 
