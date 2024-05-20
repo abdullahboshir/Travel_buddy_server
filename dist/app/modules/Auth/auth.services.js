@@ -16,6 +16,7 @@ exports.userLoginServices = void 0;
 const prisma_1 = require("../../../Shered/prisma");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const config_1 = __importDefault(require("../../../config"));
 const userLoginServices = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const isUserExists = yield prisma_1.prisma.user.findUniqueOrThrow({
         where: {
@@ -31,7 +32,7 @@ const userLoginServices = (payload) => __awaiter(void 0, void 0, void 0, functio
         id: isUserExists.id,
         email: isUserExists.email
     };
-    const accessToken = jsonwebtoken_1.default.sign(tokenPayload, config, { expiresIn: '10d' });
+    const accessToken = jsonwebtoken_1.default.sign(tokenPayload, config_1.default.jwt.jwt_secret, { expiresIn: config_1.default.jwt.jwt_expireIn });
     const data = yield prisma_1.prisma.user.findUniqueOrThrow({
         where: {
             email: isUserExists.email
