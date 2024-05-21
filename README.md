@@ -107,8 +107,8 @@
 * Response: `please hit the endpoint for response with token of any user`
 
 
-### 9. Update a Course (Partial Update with Dynamic Update)**
-* Endpoint:   https://travel-buddy-matching-ass-8.vercel.app/api/Update User Profile
+### 9. Update a User 
+* Endpoint:   https://travel-buddy-matching-ass-8.vercel.app/api/profile User Profile
 * Method: PUT
 * Request Body:
 
