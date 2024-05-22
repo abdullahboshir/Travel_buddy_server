@@ -32,7 +32,7 @@ const tokenPayload = {
 
 const accessToken = jwt.sign(tokenPayload, config.jwt.jwt_secret as string, {expiresIn: config.jwt.jwt_expireIn});
 
-    const data = await prisma.user.findUnique({
+    const data = await prisma.user.findUniqueOrThrow({
         where: {
             email: isExistUser.email
         }
