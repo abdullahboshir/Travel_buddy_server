@@ -2,31 +2,39 @@ import { prisma } from "../../../Shered/prisma";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import config from "../../../config";
+import { ApiErrors } from "../../errors/ApiErrors";
+import httpStatus from "http-status";
 
 export const userLoginServices = async (payload: any) => {
 
-    const isUserExists = await prisma.user.findUniqueOrThrow({
-        where:{
+
+    const isExistUser = await prisma.user.findUnique({
+        where: {
             email: payload.email
         }
     });
 
-const isPassValid = await bcrypt.compare(payload.password, isUserExists.password);
+    if(!isExistUser){
+        throw new ApiErrors(false, httpStatus.NOT_FOUND, 'USER not found!')
+    }
+    
+
+const isPassValid = await bcrypt.compare(payload.password, isExistUser.password);
 
 if(!isPassValid){
     throw new Error('Your password deos not match') 
 };
 
 const tokenPayload = {
-    id: isUserExists.id,
-    email: isUserExists.email
+    id: isExistUser.id,
+    email: isExistUser.email
 };
 
 const accessToken = jwt.sign(tokenPayload, config.jwt.jwt_secret as string, {expiresIn: config.jwt.jwt_expireIn});
 
-    const data = await prisma.user.findUniqueOrThrow({
+    const data = await prisma.user.findUnique({
         where: {
-            email: isUserExists.email
+            email: isExistUser.email
         }
     }); 
  

@@ -17,25 +17,30 @@ const prisma_1 = require("../../../Shered/prisma");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("../../../config"));
+const ApiErrors_1 = require("../../errors/ApiErrors");
+const http_status_1 = __importDefault(require("http-status"));
 const userLoginServices = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const isUserExists = yield prisma_1.prisma.user.findUniqueOrThrow({
+    const isExistUser = yield prisma_1.prisma.user.findUnique({
         where: {
             email: payload.email
         }
     });
-    const isPassValid = yield bcrypt_1.default.compare(payload.password, isUserExists.password);
+    if (!isExistUser) {
+        throw new ApiErrors_1.ApiErrors(false, http_status_1.default.NOT_FOUND, 'USER not found!');
+    }
+    const isPassValid = yield bcrypt_1.default.compare(payload.password, isExistUser.password);
     if (!isPassValid) {
         throw new Error('Your password deos not match');
     }
     ;
     const tokenPayload = {
-        id: isUserExists.id,
-        email: isUserExists.email
+        id: isExistUser.id,
+        email: isExistUser.email
     };
     const accessToken = jsonwebtoken_1.default.sign(tokenPayload, config_1.default.jwt.jwt_secret, { expiresIn: config_1.default.jwt.jwt_expireIn });
     const data = yield prisma_1.prisma.user.findUniqueOrThrow({
         where: {
-            email: isUserExists.email
+            email: isExistUser.email
         }
     });
     return {
