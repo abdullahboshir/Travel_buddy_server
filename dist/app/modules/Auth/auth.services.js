@@ -20,6 +20,10 @@ const config_1 = __importDefault(require("../../../config"));
 const ApiErrors_1 = require("../../errors/ApiErrors");
 const http_status_1 = __importDefault(require("http-status"));
 const userLoginServices = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password } = payload;
+    if (!email || !password) {
+        throw new Error("Email and password are required.");
+    }
     const isExistUser = yield prisma_1.prisma.user.findUnique({
         where: {
             email: payload.email

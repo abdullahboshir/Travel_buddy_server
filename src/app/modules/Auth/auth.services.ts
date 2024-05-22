@@ -7,6 +7,12 @@ import httpStatus from "http-status";
 
 export const userLoginServices = async (payload: any) => {
 
+    const { email, password } = payload;
+
+    if (!email || !password) {
+      throw new Error("Email and password are required.");
+    }
+
 
     const isExistUser = await prisma.user.findUnique({
         where: {
