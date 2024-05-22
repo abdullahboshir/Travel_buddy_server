@@ -20,31 +20,27 @@ const config_1 = __importDefault(require("../../../config"));
 const ApiErrors_1 = require("../../errors/ApiErrors");
 const http_status_1 = __importDefault(require("http-status"));
 const userLoginServices = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = payload;
-    if (!email || !password) {
-        throw new Error("Email and password are required.");
-    }
     const isExistUser = yield prisma_1.prisma.user.findUnique({
         where: {
-            email: payload.email
+            email: payload === null || payload === void 0 ? void 0 : payload.email
         }
     });
     if (!isExistUser) {
         throw new ApiErrors_1.ApiErrors(false, http_status_1.default.NOT_FOUND, 'USER not found!');
     }
-    const isPassValid = yield bcrypt_1.default.compare(payload.password, isExistUser.password);
+    const isPassValid = yield bcrypt_1.default.compare(payload.password, isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.password);
     if (!isPassValid) {
         throw new Error('Your password deos not match');
     }
     ;
     const tokenPayload = {
-        id: isExistUser.id,
-        email: isExistUser.email
+        id: isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.id,
+        email: isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.email
     };
     const accessToken = jsonwebtoken_1.default.sign(tokenPayload, config_1.default.jwt.jwt_secret, { expiresIn: config_1.default.jwt.jwt_expireIn });
     const data = yield prisma_1.prisma.user.findUniqueOrThrow({
         where: {
-            email: isExistUser.email
+            email: isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.email
         }
     });
     return {

@@ -9,8 +9,8 @@ const routes_1 = __importDefault(require("./app/routes"));
 const globalErrorHandler_1 = require("./app/middelware/globalErrorHandler");
 const http_status_1 = __importDefault(require("http-status"));
 const app = (0, express_1.default)();
-app.use(express_1.default.json());
 app.use((0, cors_1.default)());
+app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
     res.send({

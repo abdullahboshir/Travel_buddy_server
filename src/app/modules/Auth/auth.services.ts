@@ -7,16 +7,10 @@ import httpStatus from "http-status";
 
 export const userLoginServices = async (payload: any) => {
 
-    const { email, password } = payload;
-
-    if (!email || !password) {
-      throw new Error("Email and password are required.");
-    }
-
 
     const isExistUser = await prisma.user.findUnique({
         where: {
-            email: payload.email
+            email: payload?.email
         }
     });
 
@@ -25,22 +19,22 @@ export const userLoginServices = async (payload: any) => {
     }
     
 
-const isPassValid = await bcrypt.compare(payload.password, isExistUser.password);
+const isPassValid = await bcrypt.compare(payload.password, isExistUser?.password);
 
 if(!isPassValid){
     throw new Error('Your password deos not match') 
 };
 
 const tokenPayload = {
-    id: isExistUser.id,
-    email: isExistUser.email
+    id: isExistUser?.id,
+    email: isExistUser?.email
 };
 
 const accessToken = jwt.sign(tokenPayload, config.jwt.jwt_secret as string, {expiresIn: config.jwt.jwt_expireIn});
 
     const data = await prisma.user.findUniqueOrThrow({
         where: {
-            email: isExistUser.email
+            email: isExistUser?.email
         }
     }); 
  

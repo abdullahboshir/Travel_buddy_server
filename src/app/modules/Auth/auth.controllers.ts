@@ -12,6 +12,7 @@ export const userLoginController = tryCatchHandler(
         statusCode: 201,
         message: "User Logged in successfully",
         data: {
+          
             id:  result.data.id,
             name: result.data.name,
             email: result.data.email,
