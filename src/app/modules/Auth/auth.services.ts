@@ -27,6 +27,7 @@ if(!isPassValid){
 
 const tokenPayload = {
     id: isExistUser?.id,
+    role: isExistUser?.role,
     email: isExistUser?.email
 };
 
@@ -42,4 +43,10 @@ const accessToken = jwt.sign(tokenPayload, config.jwt.jwt_secret as string, {exp
         data,
        accessToken
     };
+};
+
+
+
+export const changePassService = (user: any, payload: any) => {
+    
 };

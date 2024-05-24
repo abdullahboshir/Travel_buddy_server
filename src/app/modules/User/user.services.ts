@@ -1,109 +1,74 @@
+import httpStatus from "http-status";
 import { prisma } from "../../../Shered/prisma";
-import bcrypt from 'bcrypt';
-import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
-import config from "../../../config";
+import { ApiErrors } from "../../errors/ApiErrors";
 
-
-export const createUserServices = async (payload: any) => {
-
-    const isExistUser = await prisma.user.findUnique({
-        where: {
-            email: payload.email
-        }
-    });
-
-
-    if(isExistUser){
-        return {
-            message: 'User already registered'
-        }
-    };
-
-
-const hashedPass = await bcrypt.hash(payload.password, 12);
-payload.password = hashedPass;
-
-
-const createUser = await prisma.$transaction(async (usedTransaction) => {
-
-    const user =  await usedTransaction.user.create({
-        data: payload,
-        select: {
-            id: true,
-            name: true,
-            email: true,
-            createdAt: true,
-            updatedAt: true,
-        }
-    });
-
-
-    const createUserProfile = await usedTransaction.userProfile.create({
-        data: {
-            user: {
-                connect: {
-                    id: user.id
-                }
-            },
-            age: 0,
-            bio: "" 
-        }
-    });
-
-    return user;
+export const getUsersService = async () => {
+const result = await prisma.user.findMany({
+    select: {
+        id :true,
+        username :true,
+        role: true,
+        needPasswordChange: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true
+    }
 });
-
-    return createUser;
+return result;
 };
 
 
-export const getUserProfileService = async (token: any) => {
 
-    if(!token){
-        throw new Error('Your are not authorizaed!')
-    };
+// export const getUsersService = async (token: any) => {
+
+//     if(!token){
+//         throw new Error('Your are not authorizaed!')
+//     };
     
 
-    const decoded = jwt.verify(token, config.jwt.jwt_secret as Secret) as JwtPayload;
+//     const decoded = jwt.verify(token, config.jwt.jwt_secret as Secret) as JwtPayload;
 
-    const result = await prisma.user.findFirst({
-        where: {
-            id: decoded.id 
-        },
-        select: {
-            id: true,
-            name : true,
-            email :true,
-            createdAt: true,
-            updatedAt: true
-        }
-    });
-    return result;
-};
+//     const result = await prisma.user.findFirst({
+//         where: {
+//             id: decoded.id 
+//         },
+//         select: {
+//             id: true,
+//             username : true,
+//             email :true,
+//             createdAt: true,
+//             updatedAt: true
+//         }
+//     });
+//     return result;
+// };
 
 
 
-export const updateUserService = async (token: any, payload: any) => {
+export const updateUserService = async (id: any, payload: any) => {
     let result;
 
+    const userInfo = await prisma.user.findUnique({
+        where: {id: id}
+    });
 
-    if(!token){
-        throw new Error('Your are not authorizaed!')
+    if(!userInfo){
+        throw new ApiErrors(false, httpStatus.FORBIDDEN ,'User Not Found!')
     };
 
-    const decoded = jwt.verify(token, config.jwt.jwt_secret as Secret) as JwtPayload;
 
-
-    if(payload?.email || payload?.name){
+    if(payload?.email || payload?.username || payload?.role || payload?.status){
          result = await prisma.user.update({
             where: {
-                id: decoded.id 
+                id
             },
             data: payload,
             select: {
                 id: true,
-                name : true,
+                username : true,
                 email :true,
+                role: true, 
+                status: true,
                 createdAt: true,
                 updatedAt: true 
             }
@@ -116,7 +81,7 @@ export const updateUserService = async (token: any, payload: any) => {
 
         result = await prisma.userProfile.update({
             where: {
-                userId: decoded.id
+                userId: id
             },
             data: payload
         })

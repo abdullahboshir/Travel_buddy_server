@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 });
 
 
-app.use('/api/', router);
+app.use('/api/v1/', router);
 
 app.use('*', (req, res, next) => {
     res.status(httpStatus.NOT_FOUND).json({

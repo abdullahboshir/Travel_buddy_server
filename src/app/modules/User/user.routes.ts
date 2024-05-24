@@ -1,13 +1,19 @@
 import express from 'express';
-import { createUserController, getUserProfileController, updateUserController } from './user.controllers';
+import { getUsersController, updateUserController } from './user.controllers';
+import auth from '../../middelware/auth';
+import { UserRole } from '@prisma/client';
+
+
 
 const router = express.Router();
 
 
-router.post('/register', createUserController);
-router.get('/profile', getUserProfileController);
-router.put('/profile', updateUserController);
+router.get('/getUsers', getUsersController);
+// router.get('/profile', getTravelerProfileController);
+router.put('/update/:id', auth(UserRole.ADMIN), updateUserController);
 
 
 
-export const UserRouters = router; 
+export const userRoutes = router;
+
+

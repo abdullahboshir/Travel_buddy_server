@@ -1,4 +1,4 @@
-import {TravelBuddyRequest, Trip, status } from "@prisma/client";
+import {RequestStatus, TravelBuddyRequest, UserStatus } from "@prisma/client";
 import { prisma } from "../../../Shered/prisma";
 import { calculatePagination } from "../../helpers/calculatePagination";
 import { TMeta } from "../../utils/sendResponseHandler";
@@ -10,29 +10,27 @@ import { parseDate } from "../../../Shered/dateFinder";
 
 
 
-export const createTripService = async (token: string, payload: any) => {
+export const createTripService = async (token: {id: string}, payload: any) => {
 
     if(!token){ 
         throw new ApiErrors(false, httpStatus.FORBIDDEN, "Unauthorized Access",)
     };
-
-    const verifyToken = jwt.verify(token, config.jwt.jwt_secret as string);
-
+    
     const isExistUser = await prisma.user.findUnique({
         where: {
-            id: payload.userId
+            id:  token.id
         }
     });
-
+    
     if(!isExistUser){
         throw new ApiErrors(false, httpStatus.NOT_FOUND, 'USER not found!')
     }
-
-   
+    
+    
     payload.startDate = parseDate(payload.startDate);
     payload.endDate = parseDate(payload.endDate);
-
-
+    payload.userId = isExistUser.id
+    
     
     const createTrip = await prisma.trip.create({
         data: payload
@@ -40,6 +38,7 @@ export const createTripService = async (token: string, payload: any) => {
 
     return createTrip
 };
+
 
 
 export const getTripService = async (query: any, pagination: any) => {
@@ -79,7 +78,8 @@ if(Object.keys(stringData).length > 0){
     condition.push({
         AND: Object.keys(stringData).map(key => ({
             [key]: {
-                equals: stringData[key]
+                equals: stringData[key],
+                mode: 'insensitive'
             }
         }))
     })
@@ -141,6 +141,37 @@ const meta: TMeta = {
 };
 
 
+
+export const updateTripService = async (id: any, payload: any) => {
+
+    const userInfo = await prisma.trip.findUnique({
+        where: {id: id}
+    });
+
+    if(!userInfo){
+        throw new ApiErrors(false, httpStatus.FORBIDDEN ,'Trip Not Found!')
+    };
+
+    payload.startDate = parseDate(payload.startDate);
+    payload.endDate = parseDate(payload.endDate);
+
+       const  result = await prisma.trip.update({
+            where: {
+                id
+            },
+            data: payload
+        });
+ 
+
+    
+ 
+    return result;
+};
+
+
+
+
+
 export const sendBuddyReqServices = async (token: string, param: any, payload: TravelBuddyRequest) => {
 
     if(!token){
@@ -176,7 +207,7 @@ export const sendBuddyReqServices = async (token: string, param: any, payload: T
         data : {
             tripId: param.tripId,
             userId: payload.userId,
-            status: status.PENDING
+            status: RequestStatus.PENDING
         }
     });
 

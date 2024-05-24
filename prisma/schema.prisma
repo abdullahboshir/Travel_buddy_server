@@ -9,24 +9,80 @@ datasource db {
 
 model User {
   id                 String               @id @unique @default(uuid())
-  name               String
+  username           String               @unique
   email              String               @unique
   password           String
+  role UserRole                            @default(TRAVELER)
+  needPasswordChange Boolean              @default(true)
+  status UserStatus                       @default(ACTIVATE)
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
   travelBuddyRequest TravelBuddyRequest[]
   trip               Trip[]
-  userProfile        UserProfile?
+  userProfile        UserProfile[]
+  admin Admin[]
+  traveler Traveler[]
 
   @@map("users")
 }
 
+model UserProfile {
+  id        String   @id @unique @default(uuid())
+  bio       String   @default("")
+  age       Int      @default(0)
+  phone     String?   @unique
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("userProfiles")
+}
+
+
+model Admin {
+  id String @id @unique @default(uuid())
+  username String
+  userId String @unique
+  email String @unique
+  profilePhoto String?
+  contactNumber String?
+  isDeleted Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  @@map("admins")
+}
+
+
+model Traveler {
+  id String @id @unique @default(uuid())
+  userId String @unique
+  username String
+  email String @unique
+  profilePhoto String?
+  contactNumber String?
+  isDeleted Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  @@map("travelers")
+}
+
+
 model Trip {
   id                 String               @id @unique @default(uuid())
   destination        String
+  description        String
+  type               String
+  location           String
+  itinerary          String
+  photos             String?
   startDate          DateTime
   endDate            DateTime
-  budget             Int
   activities         String[]
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
@@ -39,7 +95,8 @@ model Trip {
 
 model TravelBuddyRequest {
   id        String   @id @unique @default(uuid())
-  status    status
+  status    RequestStatus
+  agreedToTerms    Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   tripId    String
@@ -50,20 +107,22 @@ model TravelBuddyRequest {
   @@map("travelBuddyRequests")
 }
 
-model UserProfile {
-  id        String   @id @unique @default(uuid())
-  bio       String   @default("")
-  age       Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id])
 
-  @@map("userProfiles")
+enum UserStatus {
+  ACTIVATE
+  DEACTIVATE
+  DELETED
 }
 
-enum status {
+enum RequestStatus {
   PENDING
   APPROVED
   REJECTED
 }
+
+enum UserRole {
+  ADMIN
+  TRAVELER
+}
+
+

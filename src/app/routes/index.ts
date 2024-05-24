@@ -1,24 +1,34 @@
 import express from 'express';
 import { AuthRouters } from "../modules/Auth/auth.routes";
 import { TripRoutes } from "../modules/Trip/trip.router";
-import { UserRouters } from "../modules/User/user.routes";
 import { TravelBuddiesRoutes } from '../modules/TravelBuddies/travelBuddies.routes';
+import { TravelerRoutes } from '../modules/Traveler/traveler.routes';
+import { AdminRoutes } from '../modules/Admin/admin.routes';
+import { userRoutes } from '../modules/User/user.routes';
 
 const router = express.Router();
 
 
 const items = [
     {
-        path: '/',
+        path: '/users',
+        route: userRoutes
+    },
+    {
+        path: '/trips',
         route: TripRoutes
     },
     {
-        path: '/',
+        path: '/auth',
         route: AuthRouters
     },
     {
-        path: '/',
-        route: UserRouters
+        path: '/traveler',
+        route: TravelerRoutes
+    },
+    {
+        path: '/admin',
+        route: AdminRoutes
     },
     {
         path: '/',
