@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.respondTravelReqService = exports.getSingleTravelBuddiesServices = void 0;
+exports.getRequstedBuddiesService = exports.respondTravelReqService = exports.getSingleTravelBuddiesServices = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const prisma_1 = require("../../../Shered/prisma");
 const ApiErrors_1 = require("../../errors/ApiErrors");
@@ -38,7 +38,7 @@ const getSingleTravelBuddiesServices = (token, param) => __awaiter(void 0, void 
             user: {
                 select: {
                     id: true,
-                    name: true,
+                    username: true,
                     email: true,
                     createdAt: true,
                     updatedAt: true
@@ -67,3 +67,6 @@ const respondTravelReqService = (token, param, payload) => __awaiter(void 0, voi
     return respondReq;
 });
 exports.respondTravelReqService = respondTravelReqService;
+const getRequstedBuddiesService = (user) => __awaiter(void 0, void 0, void 0, function* () {
+});
+exports.getRequstedBuddiesService = getRequstedBuddiesService;

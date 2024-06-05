@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.respondTravelReqController = exports.getSingleTravelBuddiesController = void 0;
+exports.getRequstedBuddiesController = exports.respondTravelReqController = exports.getSingleTravelBuddiesController = void 0;
 const sendResponseHandler_1 = require("../../utils/sendResponseHandler");
 const tryCatchHandler_1 = require("../../utils/tryCatchHandler");
 const travelBuddies_services_1 = require("./travelBuddies.services");
@@ -28,6 +28,15 @@ exports.respondTravelReqController = (0, tryCatchHandler_1.tryCatchHandler)((req
         success: true,
         statusCode: 200,
         message: "Travel buddy request responded successfully",
+        data: result
+    });
+}));
+exports.getRequstedBuddiesController = (0, tryCatchHandler_1.tryCatchHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield (0, travelBuddies_services_1.getRequstedBuddiesService)(req === null || req === void 0 ? void 0 : req.user);
+    (0, sendResponseHandler_1.sendReponseHandler)(res, {
+        success: true,
+        statusCode: 200,
+        message: "Travel buddy requested Data retrieved successfully",
         data: result
     });
 }));

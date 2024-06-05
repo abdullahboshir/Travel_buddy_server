@@ -9,34 +9,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUserController = exports.getUserProfileController = exports.createUserController = void 0;
-const user_services_1 = require("./user.services");
+exports.updateUserController = exports.getTravelerProfileController = exports.getUsersController = void 0;
+const sendResponseHandler_1 = require("../../utils/sendResponseHandler");
 const tryCatchHandler_1 = require("../../utils/tryCatchHandler");
-const createUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield (0, user_services_1.createUserServices)(req.body);
-    res.status(200).json({
+const user_services_1 = require("./user.services");
+exports.getUsersController = (0, tryCatchHandler_1.tryCatchHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield (0, user_services_1.getUsersService)();
+    (0, sendResponseHandler_1.sendReponseHandler)(res, {
         success: true,
-        statusCode: 201,
-        message: "User created successfully",
+        statusCode: 200,
+        message: "Users retrieved successfully",
         data: result
     });
-});
-exports.createUserController = createUserController;
-exports.getUserProfileController = (0, tryCatchHandler_1.tryCatchHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield (0, user_services_1.getUserProfileService)(req.headers.authorization);
+}));
+exports.getTravelerProfileController = (0, tryCatchHandler_1.tryCatchHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield (0, user_services_1.getTravelerProfileService)(req.user.id);
     res.status(200).json({
         success: true,
         statusCode: 200,
-        message: "User profile updated successfully",
+        message: "Traveler profile retrieved successfully",
         data: result
     });
 }));
 exports.updateUserController = (0, tryCatchHandler_1.tryCatchHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield (0, user_services_1.updateUserService)(req.headers.authorization, req.body);
+    const result = yield (0, user_services_1.updateUserService)(req.params.id, req.body);
     res.status(200).json({
         success: true,
         statusCode: 200,
-        message: "User profile retrieved successfully",
+        message: "Traveler profile retrieved successfully",
         data: result
     });
 }));

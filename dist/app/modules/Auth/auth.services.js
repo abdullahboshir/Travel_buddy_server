@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userLoginServices = void 0;
+exports.changePassService = exports.userLoginServices = void 0;
 const prisma_1 = require("../../../Shered/prisma");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -35,9 +35,11 @@ const userLoginServices = (payload) => __awaiter(void 0, void 0, void 0, functio
     ;
     const tokenPayload = {
         id: isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.id,
+        role: isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.role,
         email: isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.email
     };
     const accessToken = jsonwebtoken_1.default.sign(tokenPayload, config_1.default.jwt.jwt_secret, { expiresIn: config_1.default.jwt.jwt_expireIn });
+    const refreshToken = jsonwebtoken_1.default.sign(tokenPayload, config_1.default.jwt.refresh_token_secret, { expiresIn: config_1.default.jwt.refresh_token_expirein });
     const data = yield prisma_1.prisma.user.findUniqueOrThrow({
         where: {
             email: isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.email
@@ -45,7 +47,11 @@ const userLoginServices = (payload) => __awaiter(void 0, void 0, void 0, functio
     });
     return {
         data,
-        accessToken
+        accessToken,
+        refreshToken
     };
 });
 exports.userLoginServices = userLoginServices;
+const changePassService = (user, payload) => {
+};
+exports.changePassService = changePassService;

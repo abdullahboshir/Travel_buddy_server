@@ -11,6 +11,8 @@ exports.default = {
     port: process.env.PORT,
     jwt: {
         jwt_secret: process.env.JWT_SECRET,
-        jwt_expireIn: process.env.JWT_EXPIREIN
+        jwt_expireIn: process.env.JWT_EXPIREIN,
+        refresh_token_secret: process.env.REFRESH_TOKEN_SECRET,
+        refresh_token_expirein: process.env.REFRESH_TOKEN_EXPIREIN,
     }
 };

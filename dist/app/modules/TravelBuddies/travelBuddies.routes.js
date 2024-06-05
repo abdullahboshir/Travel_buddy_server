@@ -8,5 +8,6 @@ const express_1 = __importDefault(require("express"));
 const travelBuddies_controllers_1 = require("./travelBuddies.controllers");
 const router = express_1.default.Router();
 router.get('/travel-buddies/:tripId', travelBuddies_controllers_1.getSingleTravelBuddiesController);
+router.get('/requestedList', travelBuddies_controllers_1.getRequstedBuddiesController);
 router.put('/travel-buddies/:buddyId/respond', travelBuddies_controllers_1.respondTravelReqController);
 exports.TravelBuddiesRoutes = router;
