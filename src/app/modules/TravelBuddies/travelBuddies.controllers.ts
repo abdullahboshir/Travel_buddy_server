@@ -1,6 +1,7 @@
+import { Request } from "express";
 import { sendReponseHandler } from "../../utils/sendResponseHandler";
 import { tryCatchHandler } from "../../utils/tryCatchHandler";
-import { getSingleTravelBuddiesServices, respondTravelReqService } from "./travelBuddies.services";
+import { getRequstedBuddiesService, getSingleTravelBuddiesServices, respondTravelReqService } from "./travelBuddies.services";
 
 
 
@@ -26,6 +27,19 @@ export const respondTravelReqController = tryCatchHandler(
         success: true,
         statusCode: 200,
         message: "Travel buddy request responded successfully",
+        data: result
+        })
+    });
+
+
+export const getRequstedBuddiesController = tryCatchHandler(
+    async (req: Request & {user?: any}, res) => {
+        const result = await getRequstedBuddiesService(req?.user); 
+    
+        sendReponseHandler(res, {
+        success: true,
+        statusCode: 200,
+        message: "Travel buddy requested Data retrieved successfully",
         data: result
         })
     });

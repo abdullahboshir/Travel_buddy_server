@@ -3,6 +3,7 @@ import cors from 'cors';
 import router from './app/routes';
 import { globalErrorHandler } from './app/middelware/globalErrorHandler';
 import httpStatus from 'http-status';
+import cookieParser from 'cookie-parser';
 
 
 const app: Application = express();
@@ -10,9 +11,10 @@ const app: Application = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(cookieParser());
 
 
-app.get('/', (req, res) => {
+app.get('/', (req, res) => { 
     res.send({
         message : 'Welcome to Travel Buddy Matching App'
     })

@@ -2,92 +2,113 @@ import httpStatus from "http-status";
 import { prisma } from "../../../Shered/prisma";
 import { ApiErrors } from "../../errors/ApiErrors";
 
+
 export const getUsersService = async () => {
 const result = await prisma.user.findMany({
     select: {
         id :true,
         username :true,
+        email: true,
         role: true,
         needPasswordChange: true,
         status: true,
+        userProfile: true,
         createdAt: true,
         updatedAt: true
     }
 });
+
 return result;
 };
 
 
 
-// export const getUsersService = async (token: any) => {
+export const getTravelerProfileService = async (id: any) => {
 
-//     if(!token){
-//         throw new Error('Your are not authorizaed!')
-//     };
-    
-
-//     const decoded = jwt.verify(token, config.jwt.jwt_secret as Secret) as JwtPayload;
-
-//     const result = await prisma.user.findFirst({
-//         where: {
-//             id: decoded.id 
-//         },
-//         select: {
-//             id: true,
-//             username : true,
-//             email :true,
-//             createdAt: true,
-//             updatedAt: true
-//         }
-//     });
-//     return result;
-// };
+    const result = await prisma.user.findFirst({
+        where: {
+            id: id
+        },
+        select: {
+            id: true,
+            username : true,
+            email :true,
+            role: true,
+            createdAt: true,
+            updatedAt: true,
+            userProfile: true,
+        }
+    });
+    return result;
+};
 
 
 
 export const updateUserService = async (id: any, payload: any) => {
     let result;
-
     const userInfo = await prisma.user.findUnique({
-        where: {id: id}
+        where: { id: id }
     });
-
-    if(!userInfo){
-        throw new ApiErrors(false, httpStatus.FORBIDDEN ,'User Not Found!')
-    };
-
-
-    if(payload?.email || payload?.username || payload?.role || payload?.status){
-         result = await prisma.user.update({
-            where: {
-                id
-            },
-            data: payload,
-            select: {
-                id: true,
-                username : true,
-                email :true,
-                role: true, 
-                status: true,
-                createdAt: true,
-                updatedAt: true 
-            }
-        });
-    };
-
     
-
-    if(payload?.bio || payload?.age){
-
-        result = await prisma.userProfile.update({
-            where: {
-                userId: id
-            },
-            data: payload
-        })
+    if (!userInfo) {
+        throw new ApiErrors(false, httpStatus.FORBIDDEN, 'User Not Found!');
     }
-    
- 
-    return result;
-};
+  
+  
+    const filtered = Object.keys(payload)
+      .filter(key => payload[key] !== '' && payload[key] !== null && payload[key] !== undefined && payload[key] !== 0)
+      .reduce((obj: any, key) => {
+        obj[key] = payload[key];
+        return obj;
+      }, {});
+  
 
+    const userPayload: any = {};
+    const userProfilePayload: any = {};
+  
+    const userKeys = ['email', 'username', 'role', 'status'];
+    const userProfileKeys = ['bio', 'age', 'contactNumber', 'address', 'profilePhoto'];
+  
+
+    for (const key in filtered) {
+      if (userKeys.includes(key)) {
+        userPayload[key] = filtered[key];
+      } else if (userProfileKeys.includes(key)) {
+        userProfilePayload[key] = filtered[key];
+      }
+    }
+  
+
+  
+ 
+    if (Object.keys(userPayload).length > 0) {
+      result = await prisma.user.update({
+        where: {
+          id
+        },
+        data: userPayload,
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          role: true,
+          status: true,
+          createdAt: true,
+          updatedAt: true
+        }
+    });
+    console.log('updateeeeeeeeeeeeeeeeeeeeeeee', result) 
+    }
+  
+
+    if (Object.keys(userProfilePayload).length > 0) {
+      result = await prisma.userProfile.update({
+        where: {
+          userId: id
+        },
+        data: userProfilePayload
+      });
+    }
+  
+    return result;
+  };

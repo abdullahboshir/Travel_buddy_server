@@ -31,7 +31,7 @@ const items = [
         route: AdminRoutes
     },
     {
-        path: '/',
+        path: '/travelBuddies',
         route: TravelBuddiesRoutes
     }
 ];

@@ -3,8 +3,9 @@ import { pick } from "../../../Shered/pick";
 import { sendReponseHandler } from "../../utils/sendResponseHandler";
 import { tryCatchHandler } from "../../utils/tryCatchHandler";
 import { paginationFields, tripFilterAbleFields } from "./trip.constant";
-import { createTripService, getTripService, sendBuddyReqServices, updateTripService } from "./trip.services";
+import { createTripService, deleteTripService, getSingleTripService, getTripService, getUserTripService, sendBuddyReqServices, updateTripService } from "./trip.services";
 import { Request } from "express";
+
 
 
 export const craeteTripController = tryCatchHandler( 
@@ -26,7 +27,7 @@ export const craeteTripController = tryCatchHandler(
 
 export const getTripController = tryCatchHandler(
     async (req, res) => {
-  
+
         const filters = pick(req.query, tripFilterAbleFields);
         const pagination = pick(req.query, paginationFields);
     
@@ -45,8 +46,7 @@ export const getTripController = tryCatchHandler(
 
 export const updateTripController = tryCatchHandler(
     async (req, res) => {
-  
-    
+
         const result = await updateTripService(req.params.tripId, req.body);
 
             sendReponseHandler(res, {
@@ -63,9 +63,9 @@ export const updateTripController = tryCatchHandler(
 
 
 export const sendBuddyReqController = tryCatchHandler(
-    async (req, res) => {
+    async (req:Request & {user?: any}, res) => {
 
-        const result = await sendBuddyReqServices(req.headers.authorization as string, req.params, req.body);
+        const result = await sendBuddyReqServices(req.user, req.params, req.body);
 
         
             sendReponseHandler(res, {
@@ -76,3 +76,50 @@ export const sendBuddyReqController = tryCatchHandler(
             })
 
     });
+
+
+
+export const getSingleTripController = tryCatchHandler(
+    async (req, res) => {
+        const result = await getSingleTripService(req.params.tripId);
+        
+            sendReponseHandler(res, {
+            success: true,
+            statusCode: 201,
+            message: "Trip retrieved has been successfully!",
+            data: result
+            })
+
+    });
+
+ 
+export const getUserTripController = tryCatchHandler(
+    async (req:Request & {user?: any}, res) => {
+  
+        const result = await getUserTripService(req?.user);
+        
+            sendReponseHandler(res, {
+            success: true,
+            statusCode: 201, 
+            message: "User Trip retrieved has been successfully!",
+            data: result
+            })
+
+    });
+
+
+
+    export const deleteTripController = tryCatchHandler(
+        async (req: Request & {user?: any}, res) => {
+            const deletedTrip = await deleteTripService(req.params.tripId, req?.user)
+          
+          
+            sendReponseHandler(res, {
+                success: true,
+                statusCode: 201, 
+                message: "Trip Deleted has been successfully!",
+                data: deletedTrip
+                })
+    
+          }
+    )

@@ -11,9 +11,9 @@ import { parseDate } from "../../../Shered/dateFinder";
 
 
 export const createTripService = async (token: {id: string}, payload: any) => {
-
+    
     if(!token){ 
-        throw new ApiErrors(false, httpStatus.FORBIDDEN, "Unauthorized Access",)
+        throw new ApiErrors(false, httpStatus.FORBIDDEN, "Unauthorized Access");
     };
     
     const isExistUser = await prisma.user.findUnique({
@@ -32,6 +32,7 @@ export const createTripService = async (token: {id: string}, payload: any) => {
     payload.userId = isExistUser.id
     
     
+    console.log('payloaddddddddddd', payload)
     const createTrip = await prisma.trip.create({
         data: payload
     });
@@ -143,42 +144,47 @@ const meta: TMeta = {
 
 
 export const updateTripService = async (id: any, payload: any) => {
-
     const userInfo = await prisma.trip.findUnique({
-        where: {id: id}
+      where: { id: id }
     });
-
-    if(!userInfo){
-        throw new ApiErrors(false, httpStatus.FORBIDDEN ,'Trip Not Found!')
+  
+    if (!userInfo) {
+      throw new ApiErrors(false, httpStatus.FORBIDDEN, 'Trip Not Found!');
     };
+  
+    const filtered = Object.keys(payload)
+      .filter(key => payload[key] !== '' && payload[key] !== null && payload[key] !== undefined && payload[key] !== 0)
+      .reduce((obj: any, key) => {
+        obj[key] = payload[key];
+        return obj;
+      }, {});
+  
 
-    payload.startDate = parseDate(payload.startDate);
-    payload.endDate = parseDate(payload.endDate);
-
-       const  result = await prisma.trip.update({
-            where: {
-                id
-            },
-            data: payload
-        });
- 
-
-    
- 
+    if (filtered.startDate) {
+      filtered.startDate = parseDate(filtered.startDate);
+    }
+    if (filtered.endDate) {
+      filtered.endDate = parseDate(filtered.endDate);
+    }
+  
+  
+    const result = await prisma.trip.update({
+      where: {
+        id
+      },
+      data: filtered,
+    });
+  
     return result;
-};
+  };
 
 
 
 
-
-export const sendBuddyReqServices = async (token: string, param: any, payload: TravelBuddyRequest) => {
-
-    if(!token){
+export const sendBuddyReqServices = async (user: any, param: any, payload: TravelBuddyRequest) => {
+    if(!user){
         throw new ApiErrors(false, httpStatus.FORBIDDEN, "Unauthorized Access",)
     };
-
-    const verifyToken = jwt.verify(token, config.jwt.jwt_secret as string);
 
 
     const isExistUser = await prisma.user.findUnique({
@@ -190,14 +196,15 @@ export const sendBuddyReqServices = async (token: string, param: any, payload: T
     if(!isExistUser){
         throw new ApiErrors(false, httpStatus.NOT_FOUND, 'USER not found!')
     };
-
-
+    
+    
     const isExisTrip = await prisma.trip.findUnique({
         where: {
             id: param.tripId
         }
     });
-
+    
+    console.log('got travel information', isExisTrip)
     if(!isExisTrip){
         throw new ApiErrors(false, httpStatus.NOT_FOUND, 'TRIP not found!')
     };
@@ -213,3 +220,70 @@ export const sendBuddyReqServices = async (token: string, param: any, payload: T
 
     return sendReq; 
 };
+
+
+
+export const getSingleTripService = async (params: string) => {
+    const result = await prisma.trip.findUnique({
+        where: {
+            id: params
+        }
+    });
+    return result;
+};
+
+
+export const getUserTripService = async (user: any) => {
+    
+    if (!user?.id) {
+        throw new Error('User ID is required');
+    }
+    
+    const result = await prisma.trip.findMany({
+        where: {
+            userId: user.id,
+        },
+    });
+    console.log('userrrrrrrrrrrrrrr', result);
+  
+    return result;
+  }
+
+
+export const deleteTripService = async (id: any, user: any) => {
+
+    if(!user){
+        throw new ApiErrors(false, httpStatus.FORBIDDEN, "Unauthorized Access",)
+    };
+
+
+    const isExistUser = await prisma.user.findUnique({
+        where: {
+            id: user.id
+        }
+    });
+
+    if(!isExistUser){
+        throw new ApiErrors(false, httpStatus.NOT_FOUND, 'USER not found!')
+    };
+    
+    
+    const isExisTrip = await prisma.trip.findUnique({
+        where: {
+            id
+        }
+    });
+    
+    if(!isExisTrip){
+        throw new ApiErrors(false, httpStatus.NOT_FOUND, 'TRIP not found!')
+    };
+
+    
+    const deletedTrip = await prisma.trip.delete({
+        where: {
+            id: id
+        }
+    })
+
+    return deletedTrip;
+  }

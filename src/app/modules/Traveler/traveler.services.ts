@@ -1,22 +1,26 @@
 import { prisma } from "../../../Shered/prisma";
 import bcrypt from 'bcrypt';
-import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
-import config from "../../../config";
+
 
 
 
 export const createTravelerService = async (payload: any) => {
     const {password, ...data} = payload;
+
     
+   
     const isExistUser = await prisma.user.findUnique({
         where: {
             email: payload.email
         }
     });
     
+    payload.password  = payload.password? payload.password : '12345'; 
     
     if(isExistUser){
         return {
+            email: isExistUser.email,
+            password: payload.password,
             message: 'User already registered'
         }
     };
@@ -68,7 +72,6 @@ const createTraveler = await prisma.$transaction(async (usedTransaction) => {
             },
             age: 0,
             bio: "",
-            phone: "",
             address: "" 
         }
     });

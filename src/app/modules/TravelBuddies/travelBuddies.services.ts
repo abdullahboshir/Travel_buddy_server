@@ -64,3 +64,9 @@ export const respondTravelReqService = async (token: string, param: any, payload
 
     return respondReq;
 };
+
+
+
+export const getRequstedBuddiesService = async (user: any) => {
+
+};
