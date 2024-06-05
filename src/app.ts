@@ -14,6 +14,16 @@ app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 
 
+app.use(
+  cors({
+    origin: [
+      "https://travel-buddy-beta.vercel.app/",
+    ],
+    credentials: true,
+  })
+);
+
+
 app.get('/', (req, res) => { 
     res.send({
         message : 'Welcome to Travel Buddy Matching App'
