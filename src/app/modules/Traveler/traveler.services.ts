@@ -34,7 +34,7 @@ export const createTravelerService = async (payload: any) => {
 const createTraveler = await prisma.$transaction(async (usedTransaction) => {
 
 
-    const user =  await usedTransaction.user.create({
+    const user =  await usedTransaction.user.create({ 
         data: {
             username: payload.username,
             email: payload.email,
