@@ -11,7 +11,7 @@ router.post('/:tripId/request', auth(UserRole.ADMIN, UserRole.TRAVELER), sendBud
 router.put('/update/:tripId', updateTripController);
 router.get('/getSingleTrip/:tripId', getSingleTripController);
 router.get('/getUserTrip', auth(UserRole.ADMIN, UserRole.TRAVELER), getUserTripController);
-router.delete('/delete/:tripId', auth(UserRole.ADMIN), deleteTripController);
+router.delete('/delete/:tripId', auth(UserRole.ADMIN, UserRole.TRAVELER), deleteTripController);
 
 
 export const TripRoutes = router;

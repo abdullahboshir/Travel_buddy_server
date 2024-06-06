@@ -11,7 +11,7 @@ export const createAdminController = tryCatchHandler(
         sendReponseHandler(res, {
             success: true,
             statusCode: 201,
-            message: "Traveler created successfully",
+            message: "Admin created successfully",
             data: result
             })
     });
