@@ -20,7 +20,7 @@ export const createTravelerService = async (payload: any) => {
     if(isExistUser){
         return {
             email: isExistUser.email,
-            password: payload.password,
+            password: payload.password, 
             message: 'User already registered'
         }
     };
@@ -34,7 +34,7 @@ export const createTravelerService = async (payload: any) => {
 const createTraveler = await prisma.$transaction(async (usedTransaction) => {
 
 
-    const user =  await usedTransaction.user.create({  
+    const user =  await usedTransaction.user.create({   
         data: {
             username: payload.username,
             email: payload.email,

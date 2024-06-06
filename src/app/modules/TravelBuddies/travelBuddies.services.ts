@@ -9,7 +9,7 @@ import jwt from "jsonwebtoken";
 export const getSingleTravelBuddiesServices =  async (token: string, param: any) => {
 
     if(!token){
-        throw new ApiErrors(false, httpStatus.FORBIDDEN, "Unauthorized Access",)
+        throw new ApiErrors(false, httpStatus.FORBIDDEN, "Unauthorized Access",) 
     };
 
 
