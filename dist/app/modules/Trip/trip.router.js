@@ -15,5 +15,5 @@ router.post('/:tripId/request', (0, auth_1.default)(client_1.UserRole.ADMIN, cli
 router.put('/update/:tripId', trip_controllers_1.updateTripController);
 router.get('/getSingleTrip/:tripId', trip_controllers_1.getSingleTripController);
 router.get('/getUserTrip', (0, auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.TRAVELER), trip_controllers_1.getUserTripController);
-router.delete('/delete/:tripId', (0, auth_1.default)(client_1.UserRole.ADMIN), trip_controllers_1.deleteTripController);
+router.delete('/delete/:tripId', (0, auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.TRAVELER), trip_controllers_1.deleteTripController);
 exports.TripRoutes = router;

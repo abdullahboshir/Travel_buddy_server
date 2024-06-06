@@ -18,7 +18,7 @@ exports.createAdminController = (0, tryCatchHandler_1.tryCatchHandler)((req, res
     (0, sendResponseHandler_1.sendReponseHandler)(res, {
         success: true,
         statusCode: 201,
-        message: "Traveler created successfully",
+        message: "Admin created successfully",
         data: result
     });
 }));
