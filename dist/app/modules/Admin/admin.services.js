@@ -47,7 +47,7 @@ const createAdminService = (payload) => __awaiter(void 0, void 0, void 0, functi
             data: {
                 username: payload.username,
                 email: payload.email,
-                role: client_1.UserRole.TRAVELER,
+                role: client_1.UserRole.ADMIN,
                 password: payload.password
             },
             select: {
@@ -60,7 +60,7 @@ const createAdminService = (payload) => __awaiter(void 0, void 0, void 0, functi
         });
         data.userId = user.id;
         data.username = user.username;
-        data.role = client_1.UserRole.ADMIN;
+        data.email = user.email;
         const admin = yield usedTransaction.admin.create({
             data: data,
             select: {
