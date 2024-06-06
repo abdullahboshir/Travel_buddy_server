@@ -35,6 +35,7 @@ export const userLoginController = tryCatchHandler(
         data: {
             id:  result.data.id,
             accessToken: result.accessToken,
+            role: result?.data?.role,
             needPasswordChange: result.data.needPasswordChange
         }
         })

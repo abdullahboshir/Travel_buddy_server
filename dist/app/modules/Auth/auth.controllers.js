@@ -19,7 +19,7 @@ const tryCatchHandler_1 = require("../../utils/tryCatchHandler");
 const traveler_services_1 = require("../Traveler/traveler.services");
 const http_status_1 = __importDefault(require("http-status"));
 exports.userLoginController = (0, tryCatchHandler_1.tryCatchHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b;
     if (!((_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.password)) {
         const gUserRegister = yield (0, traveler_services_1.createTravelerService)(req.body);
         const gUserInfo = {
@@ -42,6 +42,7 @@ exports.userLoginController = (0, tryCatchHandler_1.tryCatchHandler)((req, res) 
         data: {
             id: result.data.id,
             accessToken: result.accessToken,
+            role: (_b = result === null || result === void 0 ? void 0 : result.data) === null || _b === void 0 ? void 0 : _b.role,
             needPasswordChange: result.data.needPasswordChange
         }
     });
