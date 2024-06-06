@@ -32,7 +32,7 @@ const createAdmin = await prisma.$transaction(async (usedTransaction) => {
         data: {
             username: payload.username,
             email: payload.email,
-            role: UserRole.ADMIN,
+            role: UserRole.TRAVELER,
             password: payload.password
         },
         select: {
@@ -46,6 +46,7 @@ const createAdmin = await prisma.$transaction(async (usedTransaction) => {
 
 
     data.userId = user.id;
+    data.username = user.username
     data.role = UserRole.ADMIN
     const admin =  await usedTransaction.admin.create({
         data: data,
