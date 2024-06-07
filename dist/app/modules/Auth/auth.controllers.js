@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changePassController = exports.userLoginController = void 0;
+exports.changePasswordController = exports.userLoginController = void 0;
 const auth_services_1 = require("./auth.services");
 const sendResponseHandler_1 = require("../../utils/sendResponseHandler");
 const tryCatchHandler_1 = require("../../utils/tryCatchHandler");
@@ -47,8 +47,8 @@ exports.userLoginController = (0, tryCatchHandler_1.tryCatchHandler)((req, res) 
         }
     });
 }));
-exports.changePassController = (0, tryCatchHandler_1.tryCatchHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield (0, auth_services_1.changePassService)(req.headers.authorization, req.body);
+exports.changePasswordController = (0, tryCatchHandler_1.tryCatchHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield (0, auth_services_1.changePasswordService)(req === null || req === void 0 ? void 0 : req.user, req.body);
     (0, sendResponseHandler_1.sendReponseHandler)(res, {
         success: true,
         statusCode: 201,

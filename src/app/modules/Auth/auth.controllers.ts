@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { changePassService, userLoginServices } from "./auth.services";
+import { changePasswordService, userLoginServices } from "./auth.services";
 import { sendReponseHandler } from "../../utils/sendResponseHandler";
 import { tryCatchHandler } from "../../utils/tryCatchHandler";
 import { createTravelerService } from "../Traveler/traveler.services";
@@ -43,9 +43,9 @@ export const userLoginController = tryCatchHandler(
 
 
 
-export const changePassController = tryCatchHandler(
-    async (req: Request, res: Response) => {
-        const result = await changePassService(req.headers.authorization, req.body);
+export const changePasswordController = tryCatchHandler(
+    async (req: Request & {user?: any}, res: Response) => {
+        const result = await changePasswordService(req?.user, req.body);
     
         sendReponseHandler(res, {
         success: true,

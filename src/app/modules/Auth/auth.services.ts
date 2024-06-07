@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import config from "../../../config";
 import { ApiErrors } from "../../errors/ApiErrors";
 import httpStatus from "http-status";
+import { UserStatus } from "@prisma/client";
 
 export const userLoginServices = async (payload: any) => {
 
@@ -51,6 +52,35 @@ const refreshToken = jwt.sign(tokenPayload, config.jwt.refresh_token_secret as s
 
 
 
-export const changePassService = (user: any, payload: any) => {
-    
+
+
+export const changePasswordService = async (user: any, payload: any) => {
+     
+    const userData = await prisma.user.findFirstOrThrow({
+        where: {
+            email: user.email,
+            status: UserStatus.ACTIVATE
+        }
+    });
+
+    const isPasswordCorrect: boolean = await bcrypt.compare(payload.currentPassword, userData.password);
+    if(!isPasswordCorrect){
+        throw new Error('Password incorrect')
+    };
+
+    const hashedPassword: string = await bcrypt.hash(payload.newPassword, 12);
+
+    await prisma.user.update({
+        where: {
+            email: userData.email
+        },
+        data: {
+            password: hashedPassword,
+            needPasswordChange: false
+        }
+    });
+
+    return {
+        message: 'Password Changed successfully'
+    }
 };

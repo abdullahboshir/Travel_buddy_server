@@ -12,13 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changePassService = exports.userLoginServices = void 0;
+exports.changePasswordService = exports.userLoginServices = void 0;
 const prisma_1 = require("../../../Shered/prisma");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("../../../config"));
 const ApiErrors_1 = require("../../errors/ApiErrors");
 const http_status_1 = __importDefault(require("http-status"));
+const client_1 = require("@prisma/client");
 const userLoginServices = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const isExistUser = yield prisma_1.prisma.user.findUnique({
         where: {
@@ -52,6 +53,30 @@ const userLoginServices = (payload) => __awaiter(void 0, void 0, void 0, functio
     };
 });
 exports.userLoginServices = userLoginServices;
-const changePassService = (user, payload) => {
-};
-exports.changePassService = changePassService;
+const changePasswordService = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const userData = yield prisma_1.prisma.user.findFirstOrThrow({
+        where: {
+            email: user.email,
+            status: client_1.UserStatus.ACTIVATE
+        }
+    });
+    const isPasswordCorrect = yield bcrypt_1.default.compare(payload.currentPassword, userData.password);
+    if (!isPasswordCorrect) {
+        throw new Error('Password incorrect');
+    }
+    ;
+    const hashedPassword = yield bcrypt_1.default.hash(payload.newPassword, 12);
+    yield prisma_1.prisma.user.update({
+        where: {
+            email: userData.email
+        },
+        data: {
+            password: hashedPassword,
+            needPasswordChange: false
+        }
+    });
+    return {
+        message: 'Password Changed successfully'
+    };
+});
+exports.changePasswordService = changePasswordService;
