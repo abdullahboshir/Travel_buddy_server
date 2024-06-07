@@ -34,6 +34,8 @@ export const getTravelerProfileService = async (id: any) => {
             username : true,
             email :true,
             role: true,
+            status: true,
+            needPasswordChange: true,
             createdAt: true,
             updatedAt: true,
             userProfile: true,

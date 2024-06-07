@@ -43,6 +43,8 @@ const getTravelerProfileService = (id) => __awaiter(void 0, void 0, void 0, func
             username: true,
             email: true,
             role: true,
+            status: true,
+            needPasswordChange: true,
             createdAt: true,
             updatedAt: true,
             userProfile: true,
