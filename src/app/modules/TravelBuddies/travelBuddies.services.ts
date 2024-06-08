@@ -88,7 +88,11 @@ export const getRequstedBuddiesService = async (user: any) => {
         where: {
             userId: user?.id,
         },
+        include: {
+            trip: true
+        }
     });
+
 
     return tripReqStatus;
 };
