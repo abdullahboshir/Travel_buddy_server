@@ -71,7 +71,6 @@ const getRequstedBuddiesService = (user) => __awaiter(void 0, void 0, void 0, fu
     if (!user) {
         throw new ApiErrors_1.ApiErrors(false, http_status_1.default.FORBIDDEN, "Unauthorized Access");
     }
-    ;
     const isExistUser = yield prisma_1.prisma.user.findUnique({
         where: {
             id: user.id
@@ -84,7 +83,19 @@ const getRequstedBuddiesService = (user) => __awaiter(void 0, void 0, void 0, fu
         where: {
             userId: user === null || user === void 0 ? void 0 : user.id,
         },
+        include: {
+            trip: true
+        }
     });
-    return tripReqStatus;
+    const tripDestination = [];
+    for (const request of tripReqStatus) {
+        const destination = yield prisma_1.prisma.trip.findMany({
+            where: {
+                id: request.tripId
+            }
+        });
+        tripDestination.push(destination);
+    }
+    return Object.assign(Object.assign({}, tripReqStatus), tripDestination);
 });
 exports.getRequstedBuddiesService = getRequstedBuddiesService;
