@@ -82,7 +82,7 @@ const getRequstedBuddiesService = (user) => __awaiter(void 0, void 0, void 0, fu
     }
     const tripReqStatus = yield prisma_1.prisma.travelBuddyRequest.findMany({
         where: {
-            id: user === null || user === void 0 ? void 0 : user.id,
+            userId: user === null || user === void 0 ? void 0 : user.id,
         },
     });
     return tripReqStatus;

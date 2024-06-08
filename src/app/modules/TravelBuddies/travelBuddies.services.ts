@@ -86,7 +86,7 @@ export const getRequstedBuddiesService = async (user: any) => {
 
     const tripReqStatus = await prisma.travelBuddyRequest.findMany({
         where: {
-            id: user?.id,
+            userId: user?.id,
         },
     });
 
