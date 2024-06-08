@@ -103,5 +103,5 @@ export const getRequstedBuddiesService = async (user: any) => {
         tripDestination.push(destination)
     }
 
-    return {...tripReqStatus, ...tripDestination};
+    return {tripReqStatus, tripDestination};
 };

@@ -96,6 +96,6 @@ const getRequstedBuddiesService = (user) => __awaiter(void 0, void 0, void 0, fu
         });
         tripDestination.push(destination);
     }
-    return Object.assign(Object.assign({}, tripReqStatus), tripDestination);
+    return { tripReqStatus, tripDestination };
 });
 exports.getRequstedBuddiesService = getRequstedBuddiesService;
