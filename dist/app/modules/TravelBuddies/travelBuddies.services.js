@@ -68,5 +68,23 @@ const respondTravelReqService = (token, param, payload) => __awaiter(void 0, voi
 });
 exports.respondTravelReqService = respondTravelReqService;
 const getRequstedBuddiesService = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!user) {
+        throw new ApiErrors_1.ApiErrors(false, http_status_1.default.FORBIDDEN, "Unauthorized Access");
+    }
+    ;
+    const isExistUser = yield prisma_1.prisma.user.findUnique({
+        where: {
+            id: user.id
+        }
+    });
+    if (!isExistUser) {
+        throw new ApiErrors_1.ApiErrors(false, http_status_1.default.NOT_FOUND, 'USER not found!');
+    }
+    const tripReqStatus = yield prisma_1.prisma.travelBuddyRequest.findMany({
+        where: {
+            id: user === null || user === void 0 ? void 0 : user.id,
+        },
+    });
+    return tripReqStatus;
 });
 exports.getRequstedBuddiesService = getRequstedBuddiesService;

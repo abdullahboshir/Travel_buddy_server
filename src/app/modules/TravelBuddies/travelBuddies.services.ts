@@ -69,4 +69,26 @@ export const respondTravelReqService = async (token: string, param: any, payload
 
 export const getRequstedBuddiesService = async (user: any) => {
 
+    if(!user){ 
+        throw new ApiErrors(false, httpStatus.FORBIDDEN, "Unauthorized Access");
+    };
+    
+    const isExistUser = await prisma.user.findUnique({
+        where: {
+            id:  user.id
+        }
+    });
+    
+    if(!isExistUser){
+        throw new ApiErrors(false, httpStatus.NOT_FOUND, 'USER not found!')
+    }
+    
+
+    const tripReqStatus = await prisma.travelBuddyRequest.findMany({
+        where: {
+            id: user?.id,
+        },
+    });
+
+    return tripReqStatus;
 };
