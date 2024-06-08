@@ -87,15 +87,6 @@ const getRequstedBuddiesService = (user) => __awaiter(void 0, void 0, void 0, fu
             trip: true
         }
     });
-    const tripDestination = [];
-    for (const request of tripReqStatus) {
-        const destination = yield prisma_1.prisma.trip.findMany({
-            where: {
-                id: request.tripId
-            }
-        });
-        tripDestination.push(destination);
-    }
-    return { tripReqStatus, tripDestination };
+    return tripReqStatus;
 });
 exports.getRequstedBuddiesService = getRequstedBuddiesService;
