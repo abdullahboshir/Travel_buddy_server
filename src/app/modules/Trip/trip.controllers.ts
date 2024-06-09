@@ -38,7 +38,7 @@ export const getTripController = tryCatchHandler(
             "statusCode": 200,
             "message": "Trips retrieved successfully",
             meta: result.meta,
-            data: result.date
+            data: result.data
             })
 
     });

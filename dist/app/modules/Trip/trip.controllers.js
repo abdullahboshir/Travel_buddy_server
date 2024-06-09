@@ -34,7 +34,7 @@ exports.getTripController = (0, tryCatchHandler_1.tryCatchHandler)((req, res) =>
         "statusCode": 200,
         "message": "Trips retrieved successfully",
         meta: result.meta,
-        data: result.date
+        data: result.data
     });
 }));
 exports.updateTripController = (0, tryCatchHandler_1.tryCatchHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
