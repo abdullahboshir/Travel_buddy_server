@@ -29,6 +29,7 @@ const prisma_1 = require("../../../Shered/prisma");
 const calculatePagination_1 = require("../../helpers/calculatePagination");
 const ApiErrors_1 = require("../../errors/ApiErrors");
 const http_status_1 = __importDefault(require("http-status"));
+const date_fns_1 = require("date-fns");
 const dateFinder_1 = require("../../../Shered/dateFinder");
 const createTripService = (token, payload) => __awaiter(void 0, void 0, void 0, function* () {
     if (!token) {
@@ -58,25 +59,35 @@ const getTripService = (query, pagination) => __awaiter(void 0, void 0, void 0, 
     const condition = [];
     const { page, limit, skip, sortBy, sortOrder } = (0, calculatePagination_1.calculatePagination)(pagination);
     const { startDate, endDate, minBudget, maxBudget } = filterData, stringData = __rest(filterData, ["startDate", "endDate", "minBudget", "maxBudget"]);
-    if (stringData.budget && !NaN) {
-        stringData.budget = Number(query.budget);
+    if (stringData.budget && !isNaN(stringData.budget)) {
+        stringData.budget = Number(stringData.budget);
     }
-    else if (minBudget && !NaN && maxBudget && !NaN) {
+    else if (minBudget && !isNaN(minBudget) && maxBudget && !isNaN(maxBudget)) {
         query.minBudget = Number(minBudget);
         query.maxBudget = Number(maxBudget);
     }
-    ;
+    const dateRegex = /^\d{4}-\d{1,2}-\d{1,2}$/;
     if (searchTerm) {
-        condition.push({
-            OR: ['destination', 'itinerary', 'location', 'type'].map(field => ({
-                [field]: {
-                    contains: searchTerm,
-                    mode: 'insensitive'
-                }
-            }))
-        });
+        if (dateRegex.test(searchTerm)) {
+            const parsedDate = (0, date_fns_1.parseISO)(searchTerm);
+            condition.push({
+                OR: [
+                    { startDate: parsedDate },
+                    { endDate: parsedDate }
+                ]
+            });
+        }
+        else {
+            condition.push({
+                OR: ['destination', 'itinerary', 'location', 'type'].map(field => ({
+                    [field]: {
+                        contains: searchTerm,
+                        mode: 'insensitive'
+                    }
+                }))
+            });
+        }
     }
-    ;
     if (Object.keys(stringData).length > 0) {
         condition.push({
             AND: Object.keys(stringData).map(key => ({
@@ -87,20 +98,13 @@ const getTripService = (query, pagination) => __awaiter(void 0, void 0, void 0, 
             }))
         });
     }
-    ;
-    if (startDate && endDate) {
+    if (startDate) {
         condition.push({
             OR: [
-                {
-                    startDate: { gte: (0, dateFinder_1.parseDate)(startDate) }, endDate: { lte: (0, dateFinder_1.parseDate)(endDate) }
-                },
-                {
-                    startDate: { gte: (0, dateFinder_1.parseDate)(startDate) }, endDate: { lte: (0, dateFinder_1.parseDate)(endDate) }
-                }
+                { startDate: (0, date_fns_1.parseISO)(startDate) }
             ]
         });
     }
-    ;
     if (minBudget && maxBudget) {
         condition.push({
             budget: {
@@ -109,26 +113,15 @@ const getTripService = (query, pagination) => __awaiter(void 0, void 0, void 0, 
             }
         });
     }
-    ;
     const andCondition = { AND: condition };
     const result = yield prisma_1.prisma.trip.findMany({
         where: andCondition,
         skip,
         take: limit,
-        orderBy: pagination.sortBy && pagination.sortOrder ? {
-            [pagination.sortBy]: pagination.sortBy
-        } : {
-            destination: pagination.sortOrder
-        }
+        orderBy: sortBy && sortOrder ? { [sortBy]: sortOrder } : { destination: 'asc' }
     });
-    const total = yield prisma_1.prisma.trip.count({
-        where: andCondition
-    });
-    const meta = {
-        page,
-        limit,
-        total
-    };
+    const total = yield prisma_1.prisma.trip.count({ where: andCondition });
+    const meta = { page, limit, total };
     return {
         meta,
         data: result
