@@ -112,6 +112,9 @@ const getTripService = (query, pagination) => __awaiter(void 0, void 0, void 0, 
         where: andCondition,
         skip,
         take: limit,
+        include: {
+            user: true
+        },
         orderBy: pagination.sortBy && pagination.sortOrder ? {
             [pagination.sortBy]: pagination.sortBy
         } : {

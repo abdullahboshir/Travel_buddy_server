@@ -115,6 +115,9 @@ const result = await prisma.trip.findMany({
     where: andCondition,
     skip,
     take: limit,
+    include: {
+        user: true
+    },
     orderBy: pagination.sortBy && pagination.sortOrder? {
         [pagination.sortBy]: pagination.sortBy
     } : {
