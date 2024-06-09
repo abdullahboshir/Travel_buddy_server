@@ -1,9 +1,11 @@
 import {RequestStatus, TravelBuddyRequest, UserStatus } from "@prisma/client";
 import { prisma } from "../../../Shered/prisma";
 import { calculatePagination } from "../../helpers/calculatePagination";
+import { TMeta } from "../../utils/sendResponseHandler";
 import { ApiErrors } from "../../errors/ApiErrors";
 import httpStatus from "http-status";
-import { parseISO } from 'date-fns';
+import  jwt  from "jsonwebtoken";
+import config from "../../../config";
 import { parseDate } from "../../../Shered/dateFinder";
 
 
@@ -41,84 +43,94 @@ export const createTripService = async (token: {id: string}, payload: any) => {
 
 
 export const getTripService = async (query: any, pagination: any) => {
-    const { searchTerm, ...filterData } = query;
+
+    const {searchTerm, ...filterData} = query;   
     const condition = [];
 
-    const { page, limit, skip, sortBy, sortOrder } = calculatePagination(pagination);
-    const { startDate, endDate, minBudget, maxBudget, ...stringData } = filterData;
+    const {page, limit, skip, sortBy, sortOrder} = calculatePagination(pagination);
 
-    if (stringData.budget && !isNaN(stringData.budget)) {
-        stringData.budget = Number(stringData.budget);
-    } else if (minBudget && !isNaN(minBudget) && maxBudget && !isNaN(maxBudget)) {
-        query.minBudget = Number(minBudget);
-        query.maxBudget = Number(maxBudget);
-    }
 
- 
-    const dateRegex = /^\d{4}-\d{1,2}-\d{1,2}$/;
+    const {startDate, endDate, minBudget, maxBudget, ...stringData} = filterData;
 
-    if (searchTerm) {
-        if (dateRegex.test(searchTerm)) {
-            const parsedDate = parseISO(searchTerm);
-            condition.push({
-                OR: [
-                    { startDate: parsedDate },
-                    { endDate: parsedDate }
-                ]
-            });
-        } else {
-        
-            condition.push({
-                OR: ['destination', 'itinerary', 'location', 'type'].map(field => ({
-                    [field]: {
-                        contains: searchTerm,
-                        mode: 'insensitive'
-                    }
-                }))
-            });
-        }
-    }
+   if(stringData.budget && !NaN){
+    stringData.budget = Number(query.budget);
+   }else if(minBudget && !NaN && maxBudget && !NaN){
+    query.minBudget = Number(minBudget);
+    query.maxBudget = Number(maxBudget);
+   };
 
-    if (Object.keys(stringData).length > 0) {
-        condition.push({
-            AND: Object.keys(stringData).map(key => ({
-                [key]: {
-                    equals: stringData[key],
-                    mode: 'insensitive'
-                }
-            }))
-        });
-    }
+  
+   
 
-    if (startDate) {
-        condition.push({
-            OR: [
-                { startDate: parseISO(startDate) }
-            ]
-        });
-    }
-
-    if (minBudget && maxBudget) {
-        condition.push({
-            budget: {
-                gte: query.minBudget,
-                lte: query.maxBudget
+if(searchTerm){
+    condition.push({
+        OR: ['destination', 'itinerary', 'location', 'type'].map(field => ({
+            [field]: {
+                contains: searchTerm,
+                mode: 'insensitive'
             }
-        });
-    }
-
-    const andCondition = { AND: condition };
-
-    const result = await prisma.trip.findMany({
-        where: andCondition,
-        skip,
-        take: limit,
-        orderBy: sortBy && sortOrder ? { [sortBy]: sortOrder } : { destination: 'asc' }
+        }))
     });
+};
 
-    const total = await prisma.trip.count({ where: andCondition });
 
-    const meta = { page, limit, total };
+
+if(Object.keys(stringData).length > 0){
+    condition.push({
+        AND: Object.keys(stringData).map(key => ({
+            [key]: {
+                equals: stringData[key],
+                mode: 'insensitive'
+            }
+        }))
+    })
+};
+
+
+if(startDate){
+    condition.push( {
+        OR: [
+            {
+                startDate:  parseDate(startDate)
+            }
+        ]
+    })
+};
+
+
+if(minBudget && maxBudget){
+    condition.push( {
+            budget: {
+                gte: query.minBudget, 
+                lte: query.maxBudget
+            }  
+    })
+};
+
+
+const andCondition  = {AND: condition};
+
+
+const result = await prisma.trip.findMany({
+    where: andCondition,
+    skip,
+    take: limit,
+    orderBy: pagination.sortBy && pagination.sortOrder? {
+        [pagination.sortBy]: pagination.sortBy
+    } : {
+        destination: pagination.sortOrder
+    }
+});
+
+const total = await prisma.trip.count({
+    where: andCondition
+});
+
+const meta: TMeta = {
+    page,
+    limit,
+    total
+}
 
     return {
         meta,
