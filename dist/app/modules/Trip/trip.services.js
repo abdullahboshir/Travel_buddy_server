@@ -54,17 +54,18 @@ const createTripService = (token, payload) => __awaiter(void 0, void 0, void 0, 
 });
 exports.createTripService = createTripService;
 const getTripService = (query, pagination) => __awaiter(void 0, void 0, void 0, function* () {
-    const { searchTerm, filter } = query, filterData = __rest(query, ["searchTerm", "filter"]);
+    const { searchTerm } = query, filterData = __rest(query, ["searchTerm"]);
     const condition = [];
     const { page, limit, skip, sortBy, sortOrder } = (0, calculatePagination_1.calculatePagination)(pagination);
     const { startDate, endDate, minBudget, maxBudget } = filterData, stringData = __rest(filterData, ["startDate", "endDate", "minBudget", "maxBudget"]);
-    if (stringData.budget && !isNaN(stringData.budget)) {
-        stringData.budget = Number(stringData.budget);
+    if (stringData.budget && !NaN) {
+        stringData.budget = Number(query.budget);
     }
-    else if (minBudget && !isNaN(minBudget) && maxBudget && !isNaN(maxBudget)) {
+    else if (minBudget && !NaN && maxBudget && !NaN) {
         query.minBudget = Number(minBudget);
         query.maxBudget = Number(maxBudget);
     }
+    ;
     if (searchTerm) {
         condition.push({
             OR: ['destination'].map(field => ({
@@ -75,16 +76,7 @@ const getTripService = (query, pagination) => __awaiter(void 0, void 0, void 0, 
             }))
         });
     }
-    if (filter) {
-        condition.push({
-            OR: ['type', 'continent'].map(field => ({
-                [field]: {
-                    equals: filter,
-                    mode: 'insensitive'
-                }
-            }))
-        });
-    }
+    ;
     if (Object.keys(stringData).length > 0) {
         condition.push({
             AND: Object.keys(stringData).map(key => ({
@@ -95,14 +87,20 @@ const getTripService = (query, pagination) => __awaiter(void 0, void 0, void 0, 
             }))
         });
     }
+    ;
     if (startDate && endDate) {
         condition.push({
             OR: [
-                { startDate: { gte: (0, dateFinder_1.parseDate)(startDate) }, endDate: { lte: (0, dateFinder_1.parseDate)(endDate) } },
-                { startDate: { gte: (0, dateFinder_1.parseDate)(startDate) }, endDate: { lte: (0, dateFinder_1.parseDate)(endDate) } }
+                {
+                    startDate: { gte: (0, dateFinder_1.parseDate)(startDate) }, endDate: { lte: (0, dateFinder_1.parseDate)(endDate) }
+                },
+                {
+                    startDate: { gte: (0, dateFinder_1.parseDate)(startDate) }, endDate: { lte: (0, dateFinder_1.parseDate)(endDate) }
+                }
             ]
         });
     }
+    ;
     if (minBudget && maxBudget) {
         condition.push({
             budget: {
@@ -111,15 +109,26 @@ const getTripService = (query, pagination) => __awaiter(void 0, void 0, void 0, 
             }
         });
     }
+    ;
     const andCondition = { AND: condition };
     const result = yield prisma_1.prisma.trip.findMany({
         where: andCondition,
         skip,
         take: limit,
-        orderBy: sortBy && sortOrder ? { [sortBy]: sortOrder } : { destination: 'asc' }
+        orderBy: pagination.sortBy && pagination.sortOrder ? {
+            [pagination.sortBy]: pagination.sortBy
+        } : {
+            destination: pagination.sortOrder
+        }
     });
-    const total = yield prisma_1.prisma.trip.count({ where: andCondition });
-    const meta = { page, limit, total };
+    const total = yield prisma_1.prisma.trip.count({
+        where: andCondition
+    });
+    const meta = {
+        page,
+        limit,
+        total
+    };
     return {
         meta,
         data: result
