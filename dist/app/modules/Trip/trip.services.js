@@ -23,7 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTripService = exports.getUserTripService = exports.getSingleTripService = exports.sendBuddyReqServices = exports.updateTripService = exports.getTripService = exports.createTripService = void 0;
+exports.deleteTripService = exports.getUserTripService = exports.getSingleTripService = exports.sendBuddyReqServices = exports.updateTripService = exports.getTripAdminService = exports.getTripService = exports.createTripService = void 0;
 const client_1 = require("@prisma/client");
 const prisma_1 = require("../../../Shered/prisma");
 const calculatePagination_1 = require("../../helpers/calculatePagination");
@@ -135,6 +135,15 @@ const getTripService = (query, pagination) => __awaiter(void 0, void 0, void 0, 
     };
 });
 exports.getTripService = getTripService;
+const getTripAdminService = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.prisma.trip.findMany({
+        include: {
+            user: true
+        }
+    });
+    return result;
+});
+exports.getTripAdminService = getTripAdminService;
 const updateTripService = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     const userInfo = yield prisma_1.prisma.trip.findUnique({
         where: { id: id }
@@ -183,7 +192,6 @@ const sendBuddyReqServices = (user, param, payload) => __awaiter(void 0, void 0,
             id: param.tripId
         }
     });
-    console.log('got travel information', isExisTrip);
     if (!isExisTrip) {
         throw new ApiErrors_1.ApiErrors(false, http_status_1.default.NOT_FOUND, 'TRIP not found!');
     }
@@ -216,7 +224,6 @@ const getUserTripService = (user) => __awaiter(void 0, void 0, void 0, function*
             userId: user.id,
         },
     });
-    console.log('userrrrrrrrrrrrrrr', result);
     return result;
 });
 exports.getUserTripService = getUserTripService;

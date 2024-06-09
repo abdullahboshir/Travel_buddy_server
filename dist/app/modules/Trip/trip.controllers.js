@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTripController = exports.getUserTripController = exports.getSingleTripController = exports.sendBuddyReqController = exports.updateTripController = exports.getTripController = exports.craeteTripController = void 0;
+exports.deleteTripController = exports.getUserTripController = exports.getSingleTripController = exports.sendBuddyReqController = exports.updateTripController = exports.getTripAdminContrller = exports.getTripController = exports.craeteTripController = void 0;
 const pick_1 = require("../../../Shered/pick");
 const sendResponseHandler_1 = require("../../utils/sendResponseHandler");
 const tryCatchHandler_1 = require("../../utils/tryCatchHandler");
@@ -35,6 +35,15 @@ exports.getTripController = (0, tryCatchHandler_1.tryCatchHandler)((req, res) =>
         "message": "Trips retrieved successfully",
         meta: result.meta,
         data: result.data
+    });
+}));
+exports.getTripAdminContrller = (0, tryCatchHandler_1.tryCatchHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield (0, trip_services_1.getTripAdminService)();
+    (0, sendResponseHandler_1.sendReponseHandler)(res, {
+        success: true,
+        "statusCode": 200,
+        "message": "Trips retrieved successfully",
+        data: result
     });
 }));
 exports.updateTripController = (0, tryCatchHandler_1.tryCatchHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {

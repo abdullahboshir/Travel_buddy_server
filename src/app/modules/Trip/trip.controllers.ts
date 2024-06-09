@@ -3,7 +3,7 @@ import { pick } from "../../../Shered/pick";
 import { sendReponseHandler } from "../../utils/sendResponseHandler";
 import { tryCatchHandler } from "../../utils/tryCatchHandler";
 import { paginationFields, tripFilterAbleFields } from "./trip.constant";
-import { createTripService, deleteTripService, getSingleTripService, getTripService, getUserTripService, sendBuddyReqServices, updateTripService } from "./trip.services";
+import { createTripService, deleteTripService, getSingleTripService, getTripAdminService, getTripService, getUserTripService, sendBuddyReqServices, updateTripService } from "./trip.services";
 import { Request } from "express";
 
 
@@ -39,6 +39,20 @@ export const getTripController = tryCatchHandler(
             "message": "Trips retrieved successfully",
             meta: result.meta,
             data: result.data
+            })
+
+    });
+
+
+export const getTripAdminContrller = tryCatchHandler(
+    async (req, res) => {
+        const result = await getTripAdminService();
+
+            sendReponseHandler(res, {
+            success: true,
+            "statusCode": 200,
+            "message": "Trips retrieved successfully",
+            data: result
             })
 
     });

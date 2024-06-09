@@ -143,6 +143,18 @@ const meta: TMeta = {
 
 
 
+export const getTripAdminService = async () => {
+    const result = await prisma.trip.findMany({
+        include: {
+            user: true
+        }
+    });
+
+    return result;
+};
+
+
+
 export const updateTripService = async (id: any, payload: any) => {
     const userInfo = await prisma.trip.findUnique({
       where: { id: id }
@@ -204,7 +216,7 @@ export const sendBuddyReqServices = async (user: any, param: any, payload: Trave
         }
     });
     
-    console.log('got travel information', isExisTrip)
+ 
     if(!isExisTrip){
         throw new ApiErrors(false, httpStatus.NOT_FOUND, 'TRIP not found!')
     };
@@ -244,7 +256,7 @@ export const getUserTripService = async (user: any) => {
             userId: user.id,
         },
     });
-    console.log('userrrrrrrrrrrrrrr', result);
+
   
     return result;
   }

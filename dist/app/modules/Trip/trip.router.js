@@ -11,6 +11,7 @@ const client_1 = require("@prisma/client");
 const router = express_1.default.Router();
 router.post('/create', (0, auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.TRAVELER), trip_controllers_1.craeteTripController);
 router.get('/', trip_controllers_1.getTripController);
+router.get('/adminTrip', trip_controllers_1.getTripAdminContrller);
 router.post('/:tripId/request', (0, auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.TRAVELER), trip_controllers_1.sendBuddyReqController);
 router.put('/update/:tripId', trip_controllers_1.updateTripController);
 router.get('/getSingleTrip/:tripId', trip_controllers_1.getSingleTripController);
