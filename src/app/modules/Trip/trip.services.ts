@@ -64,7 +64,7 @@ export const getTripService = async (query: any, pagination: any) => {
 
 if(searchTerm){
     condition.push({
-        OR: ['destination'].map(field => ({
+        OR: ['destination', 'itinerary', 'location', 'type'].map(field => ({
             [field]: {
                 contains: searchTerm,
                 mode: 'insensitive'

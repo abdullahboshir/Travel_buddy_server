@@ -68,7 +68,7 @@ const getTripService = (query, pagination) => __awaiter(void 0, void 0, void 0, 
     ;
     if (searchTerm) {
         condition.push({
-            OR: ['destination'].map(field => ({
+            OR: ['destination', 'itinerary', 'location', 'type'].map(field => ({
                 [field]: {
                     contains: searchTerm,
                     mode: 'insensitive'
