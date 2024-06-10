@@ -10,7 +10,7 @@ export const userLoginServices = async (payload: any) => {
 
     const isExistUser = await prisma.user.findUnique({
         where: {
-            email: payload?.email,
+            email: payload?.email
         }
     });
 
