@@ -14,7 +14,6 @@ model User {
   password           String
   role               UserRole             @default(TRAVELER)
   needPasswordChange Boolean              @default(true)
-  isDeleted          Boolean              @default(false)
   status             UserStatus           @default(ACTIVATE)
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
