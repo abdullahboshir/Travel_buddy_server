@@ -47,7 +47,8 @@ export const getTravelerProfileService = async (id: any) => {
 
 
 export const updateUserService = async (id: any, payload: any) => {
-    let result;
+    let userProfileUpdated;
+    let userUpdatedResult;
     const userInfo = await prisma.user.findUnique({
         where: { id: id }
     });
@@ -84,7 +85,7 @@ export const updateUserService = async (id: any, payload: any) => {
   
  
     if (Object.keys(userPayload).length > 0) {
-      result = await prisma.user.update({
+      userUpdatedResult = await prisma.user.update({
         where: {
           id
         },
@@ -99,12 +100,12 @@ export const updateUserService = async (id: any, payload: any) => {
           updatedAt: true
         }
     });
-    console.log('updateeeeeeeeeeeeeeeeeeeeeeee', result) 
     }
   
 
+    userProfilePayload.needUpdateProfile = false
     if (Object.keys(userProfilePayload).length > 0) {
-      result = await prisma.userProfile.update({
+      userProfileUpdated = await prisma.userProfile.update({
         where: {
           userId: id
         },
@@ -112,5 +113,5 @@ export const updateUserService = async (id: any, payload: any) => {
       });
     }
   
-    return result;
+    return {...userProfileUpdated, ...userUpdatedResult};
   };

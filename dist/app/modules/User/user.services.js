@@ -54,7 +54,8 @@ const getTravelerProfileService = (id) => __awaiter(void 0, void 0, void 0, func
 });
 exports.getTravelerProfileService = getTravelerProfileService;
 const updateUserService = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    let result;
+    let userProfileUpdated;
+    let userUpdatedResult;
     const userInfo = yield prisma_1.prisma.user.findUnique({
         where: { id: id }
     });
@@ -80,7 +81,7 @@ const updateUserService = (id, payload) => __awaiter(void 0, void 0, void 0, fun
         }
     }
     if (Object.keys(userPayload).length > 0) {
-        result = yield prisma_1.prisma.user.update({
+        userUpdatedResult = yield prisma_1.prisma.user.update({
             where: {
                 id
             },
@@ -95,16 +96,16 @@ const updateUserService = (id, payload) => __awaiter(void 0, void 0, void 0, fun
                 updatedAt: true
             }
         });
-        console.log('updateeeeeeeeeeeeeeeeeeeeeeee', result);
     }
+    userProfilePayload.needUpdateProfile = false;
     if (Object.keys(userProfilePayload).length > 0) {
-        result = yield prisma_1.prisma.userProfile.update({
+        userProfileUpdated = yield prisma_1.prisma.userProfile.update({
             where: {
                 userId: id
             },
             data: userProfilePayload
         });
     }
-    return result;
+    return Object.assign(Object.assign({}, userProfileUpdated), userUpdatedResult);
 });
 exports.updateUserService = updateUserService;
