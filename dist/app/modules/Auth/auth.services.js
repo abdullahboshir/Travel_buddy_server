@@ -23,7 +23,7 @@ const client_1 = require("@prisma/client");
 const userLoginServices = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const isExistUser = yield prisma_1.prisma.user.findUnique({
         where: {
-            email: payload === null || payload === void 0 ? void 0 : payload.email
+            email: payload === null || payload === void 0 ? void 0 : payload.email,
         }
     });
     if (!isExistUser) {

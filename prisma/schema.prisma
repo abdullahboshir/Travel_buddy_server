@@ -14,6 +14,7 @@ model User {
   password           String
   role               UserRole             @default(TRAVELER)
   needPasswordChange Boolean              @default(true)
+  isDeleted          Boolean              @default(false)
   status             UserStatus           @default(ACTIVATE)
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
@@ -27,17 +28,17 @@ model User {
 }
 
 model UserProfile {
-  id            String   @id @unique @default(uuid())
-  bio           String?   
-  age           Int?      
-  profilePhoto  String?
-  contactNumber String?  @unique
-  address       String?
+  id                String   @id @unique @default(uuid())
+  bio               String?
+  age               Int?
+  profilePhoto      String?
+  contactNumber     String?  @unique
+  address           String?
   needUpdateProfile Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  userId        String   @unique
-  user          User     @relation(fields: [userId], references: [id])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id])
 
   @@map("userProfiles")
 }
